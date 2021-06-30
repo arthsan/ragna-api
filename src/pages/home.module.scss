@@ -1,0 +1,179 @@
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  height: 70vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #7e92c4;
+
+  h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+  }
+
+  h2 {
+    text-align: center;
+    width: 50ch;
+    font-size: 1.5rem;
+    font-weight: 400;
+  }
+
+  p {
+    margin: 1rem 0;
+  }
+
+  h3 {
+    margin: 1rem 0 2rem 0;
+  }
+
+  ul {
+    display: block;
+    margin-left: -10px;
+    li {
+      display: block;
+      position: relative;
+
+      &:not(:last-child) {
+        margin-bottom: 1rem;
+      }
+
+      &:before {
+        content: '';
+        position: absolute;
+        top: 1.2em;
+        left: -30px;
+        margin-top: -0.9em;
+        background: linear-gradient(45deg, #7e92c4, #1f2968);
+        height: 12px;
+        width: 12px;
+        border-radius: 50%;
+      }
+    }
+  }
+
+  section {
+    width: 700px;
+    height: 200px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 3rem;
+      width: 200px;
+      border: 0;
+      border-radius: 2rem;
+      background-color: #7e92c4;
+      color: white;
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin: 10px;
+      transition: 0.2s;
+
+      &:hover {
+        background-color: #1f2968;
+      }
+    }
+  }
+}
+
+.copyright {
+  background: var(--pink-50);
+  padding-top: 20px;
+  height: 9rem;
+  color: #7e92c4;
+  transition: 0.2s;
+
+  a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 300px;
+    margin: 0 auto;
+
+    span {
+      display: flex;
+      flex-direction: column;
+      margin-top: 0.5rem;
+      font-size: 14px;
+    }
+  }
+
+  &:hover {
+    color: #1f2968;
+  }
+}
+
+@media (max-width: 767px) {
+  .container {
+    width: 100ch;
+    height: 140vh;
+    justify-content: space-around;
+
+    h1 {
+      font-size: 4rem;
+      height: 30vh;
+    }
+
+    h2 {
+      font-size: 2rem;
+    }
+  
+    p {
+      font-size: 1.3rem;
+    }
+  
+    h3 {
+      font-size: 2rem;
+    }
+
+    ul {
+      li {
+        font-size: 1.5rem;
+      }
+    }
+  
+
+    section {
+      flex-direction: column;
+      height: 50vh;
+      justify-content: space-around;
+      margin-top: 2rem;
+      a {
+        width: 600px;
+        height: 90px;
+        font-size: 3rem;
+        span {
+        }
+      }
+    }
+  }
+
+  .copyright {
+    width: 100ch;
+    height: 10vh;
+    a {
+      width: 100%;
+      font-size: 2rem;
+      span {
+        font-size: 1.5rem;
+        div {
+          img {
+            width: 200px;
+          }
+        }
+      }
+    }
+  }
+}
