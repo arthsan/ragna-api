@@ -1,9 +1,29 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import styles from './home.module.scss'
-import { Button } from '../components/Button/Button'
+import { SearchBar } from '../components/SearchBar/SearchBar'
+import { Button } from '../components/ActiveButton/ActiveButton'
+import { Footer } from '../components/Footer/Footer'
+import { useState } from 'react'
+
+export interface ActiveObject {
+  db: string
+  objects: Array<{ id: string }>
+  activeSearch: {}
+  activeItem: {}
+}
 
 export default function Home() {
+  const [activeObject, setActiveObject] = useState<ActiveObject>({
+    db: 'old-times',
+    objects: [{ id: 'old-times' }, { id: 're-newal' }, { id: 're-start' }],
+    activeSearch: {},
+    activeItem: {},
+  })
+
+  function handleActive(active: number) {
+    setActiveObject({ ...activeObject, db: activeObject.objects[active].id })
+  }
+
   return (
     <>
       <Head>
@@ -18,10 +38,10 @@ export default function Home() {
       <main className={styles.container}>
         <h1>Ragnarok Online API</h1>
         <h2>
-          All the Ragnarok data you will ever need in one place, easily accessible
-          through a modern RESTful API.
+          All the Ragnarok data you will ever need in one place, easily
+          accessible through a modern RESTful API.
         </h2>
-        <p>Still in develpment!!</p>
+        <p>Still in development!!</p>
         <h3>Next features :</h3>
         <ul>
           <li>Documentation</li>
@@ -30,30 +50,28 @@ export default function Home() {
           <li>Vendors</li>
         </ul>
         <section>
-          <Button api="/api/old-times" db="Old Times" />
-          <Button api="/api/re-newal" db="RE:newal" />
-          <Button api="/api/re-start" db="RE:start" />
+          <Button
+            id={0}
+            label="Old Times"
+            active={activeObject}
+            onClick={() => handleActive(0)}
+          />
+          <Button
+            id={1}
+            label="RE:newal"
+            active={activeObject}
+            onClick={() => handleActive(1)}
+          />
+          <Button
+            id={2}
+            label="RE:start"
+            active={activeObject}
+            onClick={() => handleActive(2)}
+          />
         </section>
+        <SearchBar activeDb={activeObject.db} />
       </main>
-      <div className={styles.copyright}>
-        <a
-          href="https://lafinca.studio/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Developed by LaFinca Studio
-          <span>Arthur Durant</span>
-          <span className={styles.logo}>
-            <Image
-              src="/images/LaFinca.png"
-              alt="LaFinca Studio"
-              width={100}
-              height={100}
-            />
-          </span>
-          <span>jun / 2021</span>
-        </a>
-      </div>
+      <Footer />
     </>
   )
 }

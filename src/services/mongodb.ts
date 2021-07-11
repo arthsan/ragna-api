@@ -4,12 +4,38 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-async function findMonsters(client: MongoClient, dbName: string) {
+let cached = global.mongo;
+if (!cached) cached = global.mongo = {};
+
+export async function mongoConnect() {
+  if (cached.conn) return cached.conn;
+  if (!cached.promise) {
+    const conn = {};
+    const opts = {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    };
+    cached.promise = MongoClient.connect(process.env.MONGODB, opts)
+      .then((client) => {
+        conn.client = client;
+        return client;
+      })
+      .then((db) => {
+        conn.db = db;
+        cached.conn = conn;
+      });
+  }
+
+  await cached.promise;
+  return cached.conn;
+}
+
+async function findMonster(client: MongoClient, dbName: string, monster: string) {
   const databasesList = await client
     .db(dbName)
     .collection('monsters')
     .find({
-      monster_id: { $gte: 1000 },
+      monster_id: { $eq: Number(monster) },
     });
 
   const result = await databasesList.toArray();
@@ -18,19 +44,15 @@ async function findMonsters(client: MongoClient, dbName: string) {
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export async function mongo(dbName) {
-  const client = new MongoClient(process.env.MONGODB);
+
+export async function getMonster(client, dbName, monster) {
   let monsters = [];
 
   try {
-    await client.connect();
-    monsters = await findMonsters(client, dbName);
+    monsters = await findMonster(client, dbName, monster);
   } catch (error) {
     console.log(error);
-  } finally {
-    await client.close;
   }
 
   return monsters;
 }
-
