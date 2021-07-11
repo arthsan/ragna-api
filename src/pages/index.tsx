@@ -16,7 +16,7 @@ export default function Home() {
   const [activeObject, setActiveObject] = useState<ActiveObject>({
     db: 'old-times',
     objects: [{ id: 'old-times' }, { id: 're-newal' }, { id: 're-start' }],
-    activeSearch: {},
+    activeSearch: 'monsters',
     activeItem: {},
   })
 
@@ -69,7 +69,7 @@ export default function Home() {
             onClick={() => handleActive(2)}
           />
         </section>
-        <SearchBar activeDb={activeObject.db} />
+        <SearchBar activeDb={activeObject.db} activeSearch={activeObject.activeSearch} />
       </main>
       <Footer />
     </>

@@ -1,0 +1,35 @@
+.__react-json-view {
+  overflow: auto;
+  line-height: 24px;
+}
+
+.__react-json-view-key {
+  color: #1F2968;
+}
+
+.__react-json-view-value {
+  padding-left: 8px;
+  color: black;
+}
+
+.__react-json-view-bool {
+  color: rgb(0, 0, 128);
+}
+
+.__react-json-view-number {
+  color: #A25DA4;
+}
+
+.__react-json-view-array-item > .__react-json-view-value {
+  padding-left: 0;
+}
+
+.__react-json-view-string {
+  color: #98B557;
+}
+
+.__react-json-view-tag {
+  color: #ccc;
+  padding-left: 10px;
+  font-size: 14px;
+}

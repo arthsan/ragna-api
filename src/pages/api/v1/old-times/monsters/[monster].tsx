@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getMonster, mongoConnect } from '../../../../services/mongodb'
+import { getMonster, mongoConnect } from '../../../../../services/mongodb'
 
 
 const oldTimes = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -7,7 +7,7 @@ const oldTimes = async (req: NextApiRequest, res: NextApiResponse) => {
   const { monster } = req.query
 
   const oldTimes = await getMonster(client, 'old-times', monster);
-  res.status(200).json({ oldTimes })
+  res.status(200).json(oldTimes[0])
 }
 
 export default oldTimes
