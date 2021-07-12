@@ -21,7 +21,7 @@ export function SearchBar({ activeDb, activeSearch }: SearchBarProps) {
     event.preventDefault()
 
     const response = await axios.get(
-      `http://localhost:3000/api/v1/${activeDb}/monsters/${search}`,
+      `${_window.location?.href}api/v1/${activeDb}/monsters/${search}`,
     )
 
     setResult(response.data)
