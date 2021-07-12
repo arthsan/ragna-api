@@ -4,13 +4,22 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+declare global {
+  namespace NodeJS {
+    interface Global {
+      mongo: any;
+    }
+  }
+}
+
+// eslint-disable-next-line
 let cached = global.mongo;
 if (!cached) cached = global.mongo = {};
 
 export async function mongoConnect() {
   if (cached.conn) return cached.conn;
   if (!cached.promise) {
-    const conn = {};
+    const conn: any = {};
     const opts = {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -30,7 +39,11 @@ export async function mongoConnect() {
   return cached.conn;
 }
 
-async function findMonster(client: MongoClient, dbName: string, monster: string) {
+async function findMonster(
+  client: MongoClient,
+  dbName: string,
+  monster: string
+) {
   const databasesList = await client
     .db(dbName)
     .collection('monsters')
@@ -42,8 +55,6 @@ async function findMonster(client: MongoClient, dbName: string, monster: string)
 
   return result;
 }
-
-// eslint-disable-next-line import/prefer-default-export
 
 export async function getMonster(client, dbName, monster) {
   let monsters = [];

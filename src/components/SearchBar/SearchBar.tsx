@@ -9,9 +9,9 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ activeDb, activeSearch }: SearchBarProps) {
-  const [search, setSearch] = useState(1001)
-  const [result, setResult] = useState('')
-  const [_window, set_window] = useState('')
+  const [search, setSearch]: any = useState<number>(1001)
+  const [result, setResult]: any = useState('')
+  const [_window, set_window]: any = useState('')
 
   useEffect(() => {
     set_window(window)
@@ -41,9 +41,10 @@ export function SearchBar({ activeDb, activeSearch }: SearchBarProps) {
         <button type="submit">Search</button>
       </form>
       {result !== '' && (
+        
         <>
           <h4>Resource for {search}</h4>
-          <PrettyJsonView data={result} />
+          <PrettyJsonView data={result} /> 
         </>
       )}
     </div>

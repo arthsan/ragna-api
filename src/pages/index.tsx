@@ -8,7 +8,7 @@ import { useState } from 'react'
 export interface ActiveObject {
   db: string
   objects: Array<{ id: string }>
-  activeSearch: {}
+  activeSearch: string
   activeItem: {}
 }
 

@@ -1,5 +1,6 @@
 .__react-json-view {
-  overflow: auto;
+  overflow-y: scroll;
+  overflow-x: hidden;
   line-height: 24px;
 }
 
