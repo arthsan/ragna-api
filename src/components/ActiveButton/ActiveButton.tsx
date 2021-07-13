@@ -1,18 +1,26 @@
 import styles from './styles.module.scss'
-import { ActiveObject } from './../../pages/index'
+import { ActiveGameProperty, ActiveServer } from './../../pages/index'
 
 interface ButtonProps {
   id: number
   label: string
-  active: ActiveObject
+  active: ActiveServer | ActiveGameProperty
   onClick: any
 }
 
 export function Button({ id, label, active, onClick }: ButtonProps) {
   function setActive() {
-    if (active.objects[id].id === active.db) {
+    if (active.db) {
+      if (active.objects[id].id === active.db) {
+        return `${styles.active} ${styles.button}`
+      }
+      return styles.button
+    }
+
+    if (active.objects[id].id === active.collection) {
       return `${styles.active} ${styles.button}`
     }
+
     return styles.button
   }
 

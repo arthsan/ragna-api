@@ -4,6 +4,20 @@
   box-sizing: border-box;
 }
 
+:root {
+  --lightblue-100: #e1f0f1;
+  --lightblue-200: #d2edff;
+  --lightblue-300: #94c4ec;
+  --lightblue-500: #7e92c4;
+
+  --gray-200: #62929e;
+  --gray-300: #313e50;
+
+  --blue-200: #428ac6;
+  --blue-300: #38709c;
+  --blue-400: #0b68b5;
+  --blue-500: #00568a;
+}
 
 @media (max-width: 1080px) {
   html {
@@ -27,7 +41,7 @@ input,
 textarea,
 select,
 button {
-  font: 400 1rem "Roboto", sans-serif;
+  font: 400 1rem 'Roboto', sans-serif;
 }
 
 button {

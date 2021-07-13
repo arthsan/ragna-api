@@ -1,6 +1,6 @@
 import { AppProps } from 'next/dist/next-server/lib/router/router'
-import '../styles/globals.css'
-import '../styles/json-viewer.css'
+import '../styles/globals.scss'
+import '../styles/json-viewer.scss'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

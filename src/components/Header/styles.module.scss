@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 4rem;
+  background-color: var(--blue-400);
+  color: var(--lightblue-200);
+  padding: 0 2rem;
+  z-index: 2;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+
+  h2 {
+    flex: 1;
+  }
+
+  nav {
+    a {
+      padding: 0 1rem;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .container {
+    width: 100ch;
+  }
+}

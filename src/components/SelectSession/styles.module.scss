@@ -1,0 +1,25 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  height: 6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+@media (max-width: 767px) {
+  .container {
+    flex-direction: column;
+    height: 50vh;
+    justify-content: space-around;
+    margin-top: 2rem;
+    a {
+      width: 600px;
+      height: 90px;
+      font-size: 3rem;
+      span {
+      }
+    }
+  }
+}
