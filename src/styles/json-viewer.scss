@@ -5,7 +5,7 @@
 }
 
 .__react-json-view-key {
-  color: #1F2968;
+  color: #1f2968;
 }
 
 .__react-json-view-value {
@@ -18,7 +18,7 @@
 }
 
 .__react-json-view-number {
-  color: #A25DA4;
+  color: #a25da4;
 }
 
 .__react-json-view-array-item > .__react-json-view-value {
@@ -26,11 +26,17 @@
 }
 
 .__react-json-view-string {
-  color: #98B557;
+  color: #98b557;
 }
 
 .__react-json-view-tag {
   color: #ccc;
   padding-left: 10px;
   font-size: 14px;
+}
+
+.__react-json-view-object {
+  div {
+    max-height: 960px !important;
+  }
 }

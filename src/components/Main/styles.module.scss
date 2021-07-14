@@ -8,6 +8,7 @@
   justify-content: center;
   color: var(--lightblue-100);
   background-color: var(--lightblue-500);
+  margin-top: -1rem;
 
   h1 {
     display: flex;
@@ -43,41 +44,17 @@
     width: 100ch;
     justify-content: space-around;
 
+
     h1 {
-      font-size: 4rem;
-      height: 30vh;
+      font-size: 2.5rem;
     }
 
     h2 {
-      font-size: 2rem;
+      font-size: 1.5rem;
     }
 
     p {
-      font-size: 1.3rem;
-    }
-
-    h3 {
-      font-size: 2rem;
-    }
-
-    ul {
-      li {
-        font-size: 1.5rem;
-      }
-    }
-
-    section {
-      flex-direction: column;
-      height: 50vh;
-      justify-content: space-around;
-      margin-top: 2rem;
-      a {
-        width: 600px;
-        height: 90px;
-        font-size: 3rem;
-        span {
-        }
-      }
+      font-size: 1rem;
     }
   }
 }

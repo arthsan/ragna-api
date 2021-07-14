@@ -13,7 +13,8 @@ export function Button({ id, label, active, onClick }: ButtonProps) {
     if (active.db) {
       if (active.objects[id].id === active.db) {
         return `${styles.active} ${styles.button}`
-      }
+      } else if (label === 'RE:start')
+        return `${styles.button} ${styles.inactive}`
       return styles.button
     }
 
@@ -21,7 +22,7 @@ export function Button({ id, label, active, onClick }: ButtonProps) {
       return `${styles.active} ${styles.button}`
     }
 
-    return styles.button
+    return `${styles.button} ${styles.inactive}`
   }
 
   return (

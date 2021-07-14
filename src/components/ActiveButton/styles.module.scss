@@ -22,3 +22,13 @@
 .active {
   background-color: #1f2968;
 }
+
+.inactive {
+  background-color: var(--gray-100);
+  color: var(--lightblue-100);
+
+  &:hover {
+    background-color: var(--gray-100);
+    cursor: auto;
+  }
+}

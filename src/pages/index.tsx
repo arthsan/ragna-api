@@ -8,7 +8,6 @@ import { Header } from '../components/Header/Header'
 import { Main } from '../components/Main/Main'
 import { Progress } from '../components/Progress/Progress'
 import { SelectSession } from '../components/SelectSession/SelectSession'
-import useReactJsonView from '../hooks/useReactJsonView'
 
 export interface ActiveServer {
   db: string
@@ -41,17 +40,22 @@ export default function Home() {
   }
 
   function handleActive(index: number, active) {
-    if (active.db) {
+    if (active.db && activeServer.objects[index].id !== 're-start') {
       setActiveServer({
         ...activeServer,
         db: activeServer.objects[index].id,
       })
       return
     }
-    setActiveGameProperty({
-      ...activeGameProperty,
-      collection: activeGameProperty.objects[index].id,
-    })
+    if (
+      active.collection && activeGameProperty.objects[index].id !== 'items' &&
+      activeGameProperty.objects[index].id !== 'skills'
+    ) {
+      setActiveGameProperty({
+        ...activeGameProperty,
+        collection: activeGameProperty.objects[index].id,
+      })
+    }
   }
 
   return (

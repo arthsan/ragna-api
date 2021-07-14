@@ -3,12 +3,10 @@
   align-items: center;
   justify-content: space-evenly;
   color: var(--blue-500);
-
-  h3 {
-    margin: 1rem 0 2rem 0;
-  }
+  height: 4rem;
 
   ul {
+    margin-top: 1rem;
     display: flex;
     li {
       display: block;
@@ -26,17 +24,24 @@
         top: 1.2em;
         left: -1rem;
         margin-top: -0.9em;
-        background: linear-gradient(45deg, var(--lightblue-100),  var(--blue-400));
+        background: linear-gradient(
+          45deg,
+          var(--lightblue-100),
+          var(--blue-400)
+        );
         height: 12px;
         width: 12px;
         border-radius: 50%;
         transition: 1s;
-
       }
-      &:hover{
+      &:hover {
         font-weight: bold;
         &:before {
-          background: linear-gradient(-45deg, var(--blue-200),  var(--lightblue-500));
+          background: linear-gradient(
+            -45deg,
+            var(--blue-200),
+            var(--lightblue-500)
+          );
         }
       }
     }

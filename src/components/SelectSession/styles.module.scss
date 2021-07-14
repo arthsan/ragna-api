@@ -10,10 +10,10 @@
 
 @media (max-width: 767px) {
   .container {
-    flex-direction: column;
-    height: 50vh;
+    width: 100ch;
+    flex-direction: row;
     justify-content: space-around;
-    margin-top: 2rem;
+    margin-top: 1rem;
     a {
       width: 600px;
       height: 90px;

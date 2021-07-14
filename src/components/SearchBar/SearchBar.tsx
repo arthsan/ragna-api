@@ -2,8 +2,6 @@ import axios from 'axios'
 import React, { FormEvent, useEffect, useState } from 'react'
 import PrettyJsonView from 'pretty-json-view'
 import styles from './styles.module.scss'
-import useReactJsonView from '../../hooks/useReactJsonView'
-import ReactJson from 'react-json-view'
 
 interface SearchBarProps {
   activeDb: string
@@ -14,13 +12,10 @@ export function SearchBar({ activeDb, activeSearch }: SearchBarProps) {
   const [search, setSearch]: any = useState<number>(1001)
   const [result, setResult]: any = useState('')
   const [_window, set_window]: any = useState('')
-  // const ReactJson = useReactJsonView()
 
   useEffect(() => {
     set_window(window)
   }, [])
-
-  console.log(ReactJson)
 
   async function handleSearch(event: FormEvent) {
     event.preventDefault()
@@ -30,11 +25,13 @@ export function SearchBar({ activeDb, activeSearch }: SearchBarProps) {
         `${_window.location?.href}api/v1/${activeDb}/${activeSearch}/${search}`,
       )
 
-      if (response) {
-        setResult(response)
+      if (response.data) {
+        setResult(response.data)
+      } else {
+        alert(`Error getting ${activeSearch}`)  
       }
     } catch {
-      console.log('error getting data')
+      alert(`Error getting ${activeSearch}`)
     }
   }
 
@@ -54,7 +51,7 @@ export function SearchBar({ activeDb, activeSearch }: SearchBarProps) {
       {result && result !== '' && (
         <>
           <h4>Resource for {search}</h4>
-          <ReactJson src={result} />
+          <PrettyJsonView data={result}/>
         </>
       )}
     </div>

@@ -4,6 +4,8 @@
   height: 5rem;
   color: #7e92c4;
   transition: 0.2s;
+  bottom: 0;
+  position: relative;
 
   a {
     display: flex;
@@ -27,6 +29,7 @@
 
 @media (max-width: 767px) {
   .copyright {
+    margin-top: 2rem;
     width: 100ch;
     height: 10vh;
     a {
@@ -36,7 +39,7 @@
         font-size: 1.5rem;
         div {
           img {
-            width: 200px;
+            width: 100px;
           }
         }
       }

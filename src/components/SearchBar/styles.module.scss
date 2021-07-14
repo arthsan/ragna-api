@@ -1,22 +1,29 @@
 .container {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
+  flex-direction: column;
   margin-top: 2rem;
+  min-height: 25rem;
 
   h4 {
     margin: 1rem;
+    color: var(--blue-300);
+    font-size: 1.5rem;
   }
 
   div {
-    background-color: #E6F2FF;
-    width: 750px;
+    background-color: #e6f2ff;
+    width: 1140px;
   }
   div:first-child {
     max-height: 450px;
   }
 
   form {
+    width: 60rem;
+    display: flex;
+    justify-content: center;
     label {
       background-color: #c5cee0;
       border-bottom-left-radius: 10px;
@@ -24,6 +31,8 @@
       padding: 0.35rem 0.5rem;
       color: #1f2968;
       border: 1px solid #c5cee0;
+      width: 30rem;
+      text-align: right;
     }
 
     input {
@@ -38,11 +47,11 @@
     }
 
     button {
-      background-color: #0E6AB6;
-      border: solid 1px #0E6AB6;
+      background-color: #0e6ab6;
+      border: solid 1px #0e6ab6;
       border-top-right-radius: 10px;
       border-bottom-right-radius: 10px;
-      color: #E6F2FF;
+      color: #e6f2ff;
       padding: 0.35rem 0.5rem;
       font-size: 1rem;
       width: 10rem;
@@ -52,4 +61,25 @@
 
 .__react-json-view-key {
   color: blueviolet;
+}
+
+@media (max-width: 767px) {
+  .container {
+    width: 100ch;
+    overflow: hidden;
+
+    h4 {
+      margin: 2rem 0;
+    }
+
+    div {
+      width: 700px;
+      max-height: 50rem;
+
+      &:first-child {
+        max-height: 750px;
+      }
+    }
+  }
+
 }

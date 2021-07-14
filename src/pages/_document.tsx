@@ -12,7 +12,7 @@ export default class MyDocuments extends Document {
           />
           <link
             rel="shortcut icon"
-            href="/images/steto.ico.png"
+            href="/images/blue-poring.png"
             type="image/x-icon"
           />
         </Head>
