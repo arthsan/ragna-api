@@ -48,7 +48,7 @@ export default function Home() {
       return
     }
     if (
-      active.collection && activeGameProperty.objects[index].id !== 'items' &&
+      active.collection && 
       activeGameProperty.objects[index].id !== 'skills'
     ) {
       setActiveGameProperty({

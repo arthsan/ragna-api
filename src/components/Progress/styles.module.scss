@@ -18,7 +18,7 @@
         margin-bottom: 1rem;
       }
 
-      &:before {
+      &:not(.done):before {
         content: '';
         position: absolute;
         top: 1.2em;
@@ -34,7 +34,7 @@
         border-radius: 50%;
         transition: 1s;
       }
-      &:hover {
+      &:not(.done):hover {
         font-weight: bold;
         &:before {
           background: linear-gradient(
@@ -45,6 +45,24 @@
         }
       }
     }
+  }
+}
+
+.done {
+  &:before {
+    content: '';
+    position: absolute;
+    top: 1em;
+    left: -1.3rem;
+    margin-top: -0.9em;
+    background-image: url('./../../../public/images/yes.png');
+    background-size: cover;
+    height: 16px;
+    width: 16px;
+    transition: 1s;
+  }
+  &:hover {
+    font-weight: bold;
   }
 }
 

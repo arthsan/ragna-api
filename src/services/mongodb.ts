@@ -67,3 +67,32 @@ export async function getMonster(client, dbName, monster) {
 
   return monsters;
 }
+
+async function findItem(
+  client: MongoClient,
+  dbName: string,
+  item: string
+) {
+  const databasesList = await client
+  .db(dbName)
+  .collection('items')
+  .find({
+    id: { $eq: Number(item) },
+  });
+  
+  const result = await databasesList.toArray();
+
+  return result;
+}
+
+export async function getItems(client, dbName, item) {
+  let items = [];
+
+  try {
+    items = await findItem(client, dbName, item);
+  } catch (error) {
+    console.log(error);
+  }
+
+  return items;
+}

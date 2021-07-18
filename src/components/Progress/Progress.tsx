@@ -7,7 +7,7 @@ export function Progress() {
       <h3>Next features :</h3>
       <ul>
         <li>Documentation</li>
-        <li>Items</li>
+        <li className={styles.done}>Items</li>
         <li>Skills</li>
         <li>Maps</li>
         <li>Vendors</li>

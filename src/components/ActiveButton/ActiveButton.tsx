@@ -20,9 +20,11 @@ export function Button({ id, label, active, onClick }: ButtonProps) {
 
     if (active.objects[id].id === active.collection) {
       return `${styles.active} ${styles.button}`
+    } else if (label === 'Skills') {
+      return `${styles.button} ${styles.inactive}`
     }
+    return styles.button
 
-    return `${styles.button} ${styles.inactive}`
   }
 
   return (
