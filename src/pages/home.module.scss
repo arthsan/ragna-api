@@ -3,6 +3,7 @@
   margin: 0 auto;
   padding: 0 2rem;
   height: 83vh;
+  overflow-x: hidden;
 
   display: flex;
   flex-direction: column;
@@ -65,8 +66,6 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-
-    
   }
 }
 

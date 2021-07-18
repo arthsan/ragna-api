@@ -63,6 +63,21 @@
   color: blueviolet;
 }
 
+@media (max-width: 1200px) {
+  .container {
+
+    div {
+      width: 700px;
+      max-height: 50rem;
+
+      &:first-child {
+        max-height: 750px;
+      }
+    }
+  }
+
+}
+
 @media (max-width: 767px) {
   .container {
     width: 100ch;

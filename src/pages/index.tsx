@@ -8,6 +8,9 @@ import { Header } from '../components/Header/Header'
 import { Main } from '../components/Main/Main'
 import { Progress } from '../components/Progress/Progress'
 import { SelectSession } from '../components/SelectSession/SelectSession'
+import { GetServerSideProps } from 'next'
+import axios from 'axios'
+import { mongoConnect } from '../services/mongodb'
 
 export interface ActiveServer {
   db: string
@@ -48,7 +51,7 @@ export default function Home() {
       return
     }
     if (
-      active.collection && 
+      active.collection &&
       activeGameProperty.objects[index].id !== 'skills'
     ) {
       setActiveGameProperty({
@@ -90,4 +93,12 @@ export default function Home() {
       <Footer />
     </>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  await mongoConnect()
+
+  return {
+    props: {},
+  }
 }

@@ -8,7 +8,10 @@ interface SearchBarProps {
   activeSearch: string
 }
 
-export function SearchBar({ activeDb, activeSearch }: SearchBarProps) {
+export function SearchBar({
+  activeDb,
+  activeSearch
+}: SearchBarProps) {
   const [search, setSearch]: any = useState<number>(1001)
   const [result, setResult]: any = useState('')
   const [_window, set_window]: any = useState('')
@@ -28,7 +31,7 @@ export function SearchBar({ activeDb, activeSearch }: SearchBarProps) {
       if (response.data) {
         setResult(response.data)
       } else {
-        alert(`Error getting ${activeSearch}`)  
+        alert(`Error getting ${activeSearch}`)
       }
     } catch {
       alert(`Error getting ${activeSearch}`)
@@ -51,7 +54,7 @@ export function SearchBar({ activeDb, activeSearch }: SearchBarProps) {
       {result && result !== '' && (
         <>
           <h4>Resource for {search}</h4>
-          <PrettyJsonView data={result}/>
+          <PrettyJsonView data={result} />
         </>
       )}
     </div>
