@@ -3,7 +3,7 @@ import styles from './home.module.scss'
 import { SearchBar } from '../components/SearchBar/SearchBar'
 
 import { Footer } from '../components/Footer/Footer'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Header } from '../components/Header/Header'
 import { Main } from '../components/Main/Main'
 import { Progress } from '../components/Progress/Progress'
@@ -24,7 +24,7 @@ export interface ActiveGameProperty {
   db?: string
 }
 
-export default function Home() {
+export default function Home({ data }) {
   const [activeServer, setActiveServer] = useState<ActiveServer>({
     db: 'old-times',
     objects: [{ id: 'old-times' }, { id: 're-newal' }, { id: 're-start' }],
@@ -89,6 +89,7 @@ export default function Home() {
       <SearchBar
         activeDb={activeServer.db}
         activeSearch={activeGameProperty.collection}
+        firstFetch={data}
       />
       <Footer />
     </>
@@ -96,9 +97,11 @@ export default function Home() {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  await mongoConnect()
+  const { data } = await axios.get(
+    'https://ragna-api.vercel.app/api/v1/old-times/monsters/1001',
+  )
 
   return {
-    props: {},
+    props: { data },
   }
 }

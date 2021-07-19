@@ -14,7 +14,7 @@
   border-bottom-right-radius: 10px;
   border-bottom-left-radius: 10px;
 
-  h2 {
+  h1 {
     flex: 1;
   }
 
@@ -27,6 +27,6 @@
 
 @media (max-width: 767px) {
   .container {
-    width: 100ch;
+    width: 50rem;
   }
 }

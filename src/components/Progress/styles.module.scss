@@ -2,8 +2,11 @@
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  color: var(--blue-500);
+  color: var(--lightblue-100);
+  background-color: var(--lightblue-500);
   height: 4rem;
+  margin-bottom: 2rem;
+  border-radius: 10px;
 
   ul {
     margin-top: 1rem;
@@ -68,7 +71,7 @@
 
 @media (max-width: 767px) {
   .container {
-    width: 100ch;
+    width: 50rem;
     h3 {
       font-size: 1.5rem;
     }

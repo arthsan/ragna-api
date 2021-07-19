@@ -6,14 +6,16 @@ import styles from './styles.module.scss'
 interface SearchBarProps {
   activeDb: string
   activeSearch: string
+  firstFetch: any
 }
 
 export function SearchBar({
   activeDb,
-  activeSearch
+  activeSearch,
+  firstFetch,
 }: SearchBarProps) {
   const [search, setSearch]: any = useState<number>(1001)
-  const [result, setResult]: any = useState('')
+  const [result, setResult]: any = useState(firstFetch)
   const [_window, set_window]: any = useState('')
 
   useEffect(() => {

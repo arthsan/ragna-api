@@ -4,23 +4,31 @@
   align-items: center;
   flex-direction: column;
   margin-top: 2rem;
+  margin: 2rem 5rem 0;
   min-height: 25rem;
-
+  background-color: var(--blue-200);
+  border-top-left-radius: 40px;
+  border-top-right-radius: 40px;
+  
   h4 {
     margin: 1rem;
-    color: var(--blue-300);
+    color: var(--lightblue-200);
     font-size: 1.5rem;
   }
-
+  
   div {
     background-color: #e6f2ff;
     width: 1140px;
+    border-radius: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
   div:first-child {
     max-height: 450px;
   }
 
   form {
+    padding-top: 3rem;
     width: 60rem;
     display: flex;
     justify-content: center;
@@ -63,12 +71,35 @@
   color: blueviolet;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1350px) {
   .container {
 
     div {
       width: 700px;
-      max-height: 50rem;
+
+      &:first-child {
+        max-height: 750px;
+      }
+    }
+  }
+
+}
+
+@media (max-width: 991px) {
+  .container {
+
+    form {
+      width: 35rem;
+      input{ 
+        width: 5rem;
+      }
+      button {
+        width: 4rem;
+      }
+    }
+
+    div {
+      width: 550px;
 
       &:first-child {
         max-height: 750px;
@@ -80,16 +111,26 @@
 
 @media (max-width: 767px) {
   .container {
-    width: 100ch;
+    width: 40rem;
     overflow: hidden;
+
+    form {
+      width: 35rem;
+      input{ 
+        width: 5rem;
+      }
+      button {
+        width: 4rem;
+      }
+    }
+
 
     h4 {
       margin: 2rem 0;
     }
 
     div {
-      width: 700px;
-      max-height: 50rem;
+      width: 500px;
 
       &:first-child {
         max-height: 750px;
