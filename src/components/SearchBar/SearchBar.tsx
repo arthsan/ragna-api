@@ -18,6 +18,7 @@ export function SearchBar({
   const [result, setResult]: any = useState(firstFetch)
   const [_window, set_window]: any = useState('')
   const [searchId, setSearchId]: any = useState(1001)
+  const [resourceActive, setResourceActive]: any = useState('monsters')
 
   useEffect(() => {
     set_window(window)
@@ -34,6 +35,7 @@ export function SearchBar({
       if (response.data) {
         setResult(response.data)
         setSearchId(search)
+        setResourceActive(activeSearch)
       } else {
         alert(`Error getting ${activeSearch}`)
       }
@@ -57,7 +59,9 @@ export function SearchBar({
       </form>
       {result && result !== '' && (
         <>
-          <h4>Resource for {activeSearch}: {searchId}</h4>
+          <h4>
+            Resource for {resourceActive}: {searchId}
+          </h4>
           <PrettyJsonView data={result} />
         </>
       )}
