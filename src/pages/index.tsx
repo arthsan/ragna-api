@@ -65,11 +65,11 @@ export default function Home({ data }) {
     <>
       <Head>
         <title>Ragnarok Online API</title>
-        <meta name="description" content="Ragnarok Online game database" />
+        <meta name="description" content="Ragnarok Online game database API" />
         <meta name="author" content="LaFinca Studio" />
         <meta
           name="keywords"
-          content="ragnarok, api, monsters, items, drop, rate"
+          content="ragnarok, api, monsters, items, drop, rate, free, database"
         />
       </Head>
       <Header />
