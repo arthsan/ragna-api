@@ -57,7 +57,7 @@ export function SearchBar({
       </form>
       {result && result !== '' && (
         <>
-          <h4>Resource for {searchId}</h4>
+          <h4>Resource for {activeSearch}: {searchId}</h4>
           <PrettyJsonView data={result} />
         </>
       )}
