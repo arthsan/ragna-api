@@ -6,12 +6,12 @@ const prettier = require('prettier');
 (async () => {
   const prettierConfig = await prettier.resolveConfig('./.prettierrc.js');
   const pages = await globby([
-    'pages/*.tsx',
+    'src/pages/*.tsx',
     'data/**/*.mdx',
     '!data/*.mdx',
-    '!pages/_*.tsx',
-    '!pages/api',
-    '!pages/404.tsx',
+    '!src/pages/_*.tsx',
+    '!src/pages/api',
+    '!src/pages/404.tsx',
   ]);
 
   const sitemap = `
@@ -20,14 +20,14 @@ const prettier = require('prettier');
             ${pages
               .map((page) => {
                 const path = page
-                  .replace('pages', '')
+                  .replace('src/pages', '')
                   .replace('data', '')
-                  .replace('.js', '')
+                  .replace('.tsx', '')
                   .replace('.mdx', '');
                 const route = path === '/index' ? '' : path;
                 return `
                         <url>
-                            <loc>${`https://leerob.io${route}`}</loc>
+                            <loc>${`https://ragnapi.com${route}`}</loc>
                         </url>
                     `;
               })
