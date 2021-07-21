@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import useGTM from '../../../../../hooks/googleTagManager'
 import { getItems, mongoConnect } from '../../../../../services/mongodb'
 
 const oldTimes = async (req: NextApiRequest, res: NextApiResponse) => {
