@@ -37,7 +37,7 @@ const prettier = require('prettier');
 
   const formatted = prettier.format(sitemap, {
     ...prettierConfig,
-    parser: 'html'
+    parser: 'html',
   });
 
   // eslint-disable-next-line no-sync
@@ -46,4 +46,8 @@ const prettier = require('prettier');
 
 module.exports = {
   reactStrictMode: true,
-}
+  env: {
+    GTM_ID: process.env.GTM_ID,
+    MONGODB: process.env.MONGODB,
+  },
+};
