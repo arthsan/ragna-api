@@ -10,7 +10,6 @@ import { Progress } from '../components/Progress/Progress'
 import { SelectSession } from '../components/SelectSession/SelectSession'
 import { GetServerSideProps } from 'next'
 import axios from 'axios'
-import useGTM from '../hooks/googleTagManager'
 
 export interface ActiveServer {
   db: string
@@ -41,8 +40,6 @@ export default function Home({ data }) {
     db: ['Old Times', 'RE:newal', 'RE:start'],
     collection: ['Monsters', 'Items', 'Skills'],
   }
-
-  useGTM()
 
   function handleActive(index: number, active) {
     if (active.db && activeServer.objects[index].id !== 're-start') {
