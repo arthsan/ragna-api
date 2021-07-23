@@ -15,7 +15,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', '${process.env.GTM_ID}');
+          gtag('config', '${process.env.GTM_ID}',{
+            page_path: window.location.pathname,
+          });
           `}
       </Script>
       <Component {...pageProps} />
