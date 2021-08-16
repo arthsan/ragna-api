@@ -1,0 +1,121 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  margin: 0 5rem;
+  color: var(--blue-500);
+}
+
+.sideBar {
+  z-index: 10;
+  align-self: flex-start;
+  flex: 1 0;
+  position: sticky;
+  top: 4rem;
+  padding: 0 1rem;
+  font-size: 0.9em;
+
+  h2 {
+    padding: 1.5rem 0;
+  }
+
+  ul {
+    list-style: none;
+    li {
+      padding: 0.25rem 0.5rem;
+      a {
+        margin-left: -0.4em;
+        padding: 1px 0.35em 1px calc(0.4em - 2px);
+        border-left: 2px solid var(--blue-400);
+        background: var(--lightblue-200);
+        color: var(--blue-400);
+      }
+    }
+  }
+}
+
+.content {
+  background: var(--lightblue-100);
+  flex: 4 1;
+  padding: 1rem;
+  min-height: 1500px;
+  min-width: 0;
+
+  p {
+    padding: 1rem 0;
+  }
+
+  h2 {
+    padding: 1rem 0;
+  }
+
+  ul {
+    padding: 1rem 3rem;
+  }
+}
+
+.route {
+  table {
+    margin: 4rem auto 2rem;
+    background: var(--blue-300);
+    color: var(--lightblue-100);
+    border-radius: 4px;
+
+    thead {
+      tr {
+        background: var(--blue-500);
+        th {
+          padding: 1rem 2rem;
+          border: none;
+        }
+      }
+    }
+
+
+    tbody {
+      tr {
+        background: var(--lightblue-300);
+        color: var(--gray-300);
+
+        td {
+          padding:0 0.5rem;
+        }
+      }
+    }
+
+  }
+
+  & > div {
+    margin: 1rem auto;
+    height: 250px;
+    background-color: #e6f2ff;
+    width: 800px;
+    border-radius: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  & > label {
+    background: white;
+    padding: 0.4rem 0;
+    padding-right: 1rem;
+    border-radius: 5px;
+
+    span {
+      color: violet;
+    }
+
+    button {
+      border: none;
+      text-transform: uppercase;
+      background-color: var(--blue-400);
+      color: var(--lightblue-100);
+      border-radius: 3px;
+      padding: 0.5rem 1rem;
+      margin-right: 1rem;
+
+      &:hover {
+        cursor: unset;
+      }
+    }
+  }
+}

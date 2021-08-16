@@ -1,6 +1,6 @@
 import React from 'react'
-import { Button } from './../ActiveButton/ActiveButton'
-import { ActiveGameProperty, ActiveServer } from './../../pages/index'
+import { Button } from '../ActiveButton'
+import { ActiveGameProperty, ActiveServer } from '../../pages/index'
 import styles from './styles.module.scss'
 
 interface SelectSessionProps {

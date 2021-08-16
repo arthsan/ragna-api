@@ -15,6 +15,15 @@ export default class MyDocuments extends Document {
             href="/images/blue-poring.png"
             type="image/x-icon"
           />
+          <meta
+            name="description"
+            content="Ragnarok Online game database API"
+          />
+          <meta name="author" content="LaFinca Studio" />
+          <meta
+            name="keywords"
+            content="ragnarok, api, monsters, items, drop, rate, free, database"
+          />
         </Head>
         <body>
           <Main />

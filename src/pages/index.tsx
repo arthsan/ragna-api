@@ -1,13 +1,13 @@
 import Head from 'next/head'
 import styles from './home.module.scss'
-import { SearchBar } from '../components/SearchBar/SearchBar'
+import { SearchBar } from '../components/SearchBar'
 
-import { Footer } from '../components/Footer/Footer'
+import { Footer } from 'components/Footer'
 import { useEffect, useState } from 'react'
-import { Header } from '../components/Header/Header'
-import { Main } from '../components/Main/Main'
-import { Progress } from '../components/Progress/Progress'
-import { SelectSession } from '../components/SelectSession/SelectSession'
+import { Header } from 'components/Header'
+import { Main } from 'components/Main'
+import { Progress } from 'components/Progress'
+import { SelectSession } from 'components/SelectSession'
 import { GetServerSideProps } from 'next'
 import axios from 'axios'
 
@@ -42,13 +42,10 @@ export default function Home({ data }) {
   }
 
   function handleActive(index: number, active) {
-    if (active.db && activeServer.objects[index].id !== 're-start') {
-      setActiveServer({
-        ...activeServer,
-        db: activeServer.objects[index].id,
-      })
-      return
-    }
+    setActiveServer({
+      ...activeServer,
+      db: activeServer.objects[index].id,
+    })
     if (
       active.collection &&
       activeGameProperty.objects[index].id !== 'skills'
@@ -64,12 +61,6 @@ export default function Home({ data }) {
     <>
       <Head>
         <title>Ragnarok Online API</title>
-        <meta name="description" content="Ragnarok Online game database API" />
-        <meta name="author" content="LaFinca Studio" />
-        <meta
-          name="keywords"
-          content="ragnarok, api, monsters, items, drop, rate, free, database"
-        />
       </Head>
       <Header />
       <Main />

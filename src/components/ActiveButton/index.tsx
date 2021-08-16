@@ -1,5 +1,5 @@
 import styles from './styles.module.scss'
-import { ActiveGameProperty, ActiveServer } from './../../pages/index'
+import { ActiveGameProperty, ActiveServer } from '../../pages/index'
 
 interface ButtonProps {
   id: number
@@ -13,8 +13,7 @@ export function Button({ id, label, active, onClick }: ButtonProps) {
     if (active.db) {
       if (active.objects[id].id === active.db) {
         return `${styles.active} ${styles.button}`
-      } else if (label === 'RE:start')
-        return `${styles.button} ${styles.inactive}`
+      }
       return styles.button
     }
 
@@ -24,7 +23,6 @@ export function Button({ id, label, active, onClick }: ButtonProps) {
       return `${styles.button} ${styles.inactive}`
     }
     return styles.button
-
   }
 
   return (
