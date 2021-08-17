@@ -53,7 +53,7 @@ function Documentation() {
         <div className={styles.content}>
           <section id="info">
             <p>
-              <strong>Quick tip:</strong> Use your browser's "find on page"
+              <strong>Quick tip:</strong> Use your browser`s ``find on page``
               feature to search for specific resource types (
               <button>Ctrl+F</button> or <button>Cmd+F</button> ).
             </p>
