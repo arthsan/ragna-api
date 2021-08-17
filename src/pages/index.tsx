@@ -42,10 +42,12 @@ export default function Home({ data }) {
   }
 
   function handleActive(index: number, active) {
-    setActiveServer({
-      ...activeServer,
-      db: activeServer.objects[index].id,
-    })
+    if (active.db) {
+      setActiveServer({
+        ...activeServer,
+        db: activeServer.objects[index].id,
+      })
+    }
     if (
       active.collection &&
       activeGameProperty.objects[index].id !== 'skills'
