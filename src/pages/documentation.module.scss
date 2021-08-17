@@ -52,7 +52,7 @@
   h3 {
     padding: 1rem 0;
   }
-  
+
   ul {
     padding: 1rem 3rem;
   }
@@ -75,26 +75,22 @@
       }
     }
 
-
     tbody {
-
       tr {
         background: var(--lightblue-300);
         color: var(--gray-300);
 
         td {
-          padding:0 0.5rem;
+          padding: 0 0.5rem;
         }
       }
     }
-
   }
 
   & section > div {
     margin: 1rem auto;
     height: 250px;
     background-color: white;
-    width: 800px;
     border-radius: 10px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -122,6 +118,56 @@
       &:hover {
         cursor: unset;
       }
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .sideBar {
+    position: static;
+    margin-bottom: 1rem;
+    z-index: 0;
+  }
+
+  .content {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    padding-bottom: 3rem;
+  }
+
+  .container {
+    flex-direction: column;
+    justify-content: space-around;
+    margin: 0 3rem 0 5rem;
+    width: 71ch;
+
+    h2 {
+      font-size: 2rem;
+    }
+
+    p {
+      font-size: 1rem;
+    }
+
+    h3 {
+      font-size: 1rem;
+    }
+
+    ul {
+      li {
+        font-size: 1rem;
+      }
+    }
+
+  }
+
+  .route {
+    & section > div {
+      margin: 2rem 1rem;
+    }
+
+    & section > label {
+      font-size: 1rem;
     }
   }
 }
