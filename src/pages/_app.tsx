@@ -1,9 +1,13 @@
 import { AppProps } from 'next/dist/next-server/lib/router/router'
+import { useRouter } from 'next/router'
 import Script from 'next/script'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import '../styles/globals.scss'
 import '../styles/json-viewer.scss'
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter()
+  
   return (
     <>
       <Script
@@ -21,6 +25,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           `}
       </Script>
       <Component {...pageProps} />
+      <SpeedInsights route={router.pathname} />
     </>
   )
 }
