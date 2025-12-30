@@ -71,25 +71,26 @@
 
 @media (max-width: 767px) {
   .container {
-    width: 100ch;
-    height: 140vh;
-    justify-content: space-around;
+    width: 100%;
+    height: auto;
+    padding: 0 1rem;
+    justify-content: flex-start;
 
     h1 {
-      font-size: 4rem;
-      height: 30vh;
+      font-size: 2.5rem;
+      height: auto;
     }
 
     h2 {
-      font-size: 2rem;
+      font-size: 1.5rem;
     }
 
     p {
-      font-size: 1.3rem;
+      font-size: 1rem;
     }
 
     h3 {
-      font-size: 2rem;
+      font-size: 1.2rem;
     }
 
     ul {
@@ -100,16 +101,10 @@
 
     section {
       flex-direction: column;
-      height: 50vh;
-      justify-content: space-around;
-      margin-top: 2rem;
-      a {
-        width: 600px;
-        height: 90px;
-        font-size: 3rem;
-        span {
-        }
-      }
+      width: 100%;
+      height: auto;
+      justify-content: center;
+      margin-top: 1.5rem;
     }
   }
 }

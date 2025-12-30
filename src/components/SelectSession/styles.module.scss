@@ -10,16 +10,14 @@
 
 @media (max-width: 767px) {
   .container {
-    width: 50rem;
+    width: 100%;
     flex-direction: row;
-    justify-content: space-around;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
     margin-top: 1rem;
-    a {
-      width: 600px;
-      height: 90px;
-      font-size: 3rem;
-      span {
-      }
-    }
+    margin-bottom: 0.75rem;
+    padding: 0 1rem;
+    height: auto;
   }
 }

@@ -1,11 +1,13 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getItems, mongoConnect } from '../../../../../services/mongodb'
+import { getDb, getItems } from '../../../../../services/mongodb'
+import { setApiCache } from 'lib/api-cache'
 
 const oldTimes = async (req: NextApiRequest, res: NextApiResponse) => {
-  const {client} = await mongoConnect();
   const { item } = req.query
+  const db = await getDb('re-newal')
 
-  const oldTimes = await getItems(client, 're-newal', item);
+  const oldTimes = await getItems(db, item)
+  setApiCache(res)
   res.status(200).json(oldTimes[0])
 }
 

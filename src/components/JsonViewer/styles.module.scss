@@ -1,0 +1,32 @@
+.viewer {
+  background-color: #e6f2ff;
+  border-radius: 10px;
+  color: #0f1b3a;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  max-height: 450px;
+  overflow: auto;
+  padding: 1rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.key {
+  color: blueviolet;
+}
+
+.string {
+  color: #0e6ab6;
+}
+
+.number {
+  color: #1f2968;
+}
+
+.boolean {
+  color: #b31d28;
+}
+
+.null {
+  color: #6c757d;
+}

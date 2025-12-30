@@ -1,7 +1,6 @@
 import { Footer } from 'components/Footer'
 import { Header } from 'components/Header'
-import Head from 'next/head'
-import PrettyJsonView from 'pretty-json-view'
+import { JsonViewer } from 'components/JsonViewer'
 import React from 'react'
 import styles from './documentation.module.scss'
 // import DocTable from 'components/DocTable'
@@ -15,13 +14,32 @@ import { monsterRestart } from 'utils/mocks/monster/restart'
 import { itemOldTimes } from 'utils/mocks/items/oldtimes'
 import { itemRenwal } from 'utils/mocks/items/renewal'
 import { itemRestart } from 'utils/mocks/items/restart'
+import { Seo } from 'components/Seo'
+import { siteUrl } from 'lib/seo'
 
 function Documentation() {
+  const description =
+    'RagnaAPI documentation with routes, sample payloads, and usage notes for monsters, items, and other Ragnarok Online resources.'
+
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: 'Documentation — RagnaAPI',
+      url: `${siteUrl}/documentation`,
+      description,
+    },
+  ]
+
   return (
     <>
-      <Head>
-        <title>Ragnarok Online API</title>
-      </Head>
+      <Seo
+        title="Documentation — RagnaAPI"
+        description={description}
+        path="/documentation"
+        ogType="article"
+        jsonLd={jsonLd}
+      />
       <Header />
       <main className={styles.container}>
         <nav className={styles.sideBar}>
@@ -51,6 +69,12 @@ function Documentation() {
           </ul>
         </nav>
         <div className={styles.content}>
+          <h1>Documentation</h1>
+          <p>
+            Explore available resources, example responses, and route patterns.
+            Use these endpoints to build bots, tools, or dashboards around
+            Ragnarok Online data.
+          </p>
           <section id="info">
             <p>
               <strong>Quick tip:</strong> Use your browser`s ``find on page``
@@ -148,7 +172,7 @@ function Documentation() {
 
               <DocPath route={monster.oldTimes} db="[monster_id]" />
 
-              <PrettyJsonView data={monsterOldTimes} />
+              <JsonViewer data={monsterOldTimes} />
 
               {/* <DocTable tableInfo={tableOldTimesMonster} /> */}
 
@@ -156,7 +180,7 @@ function Documentation() {
 
               <DocPath route={monster.renewal} db="[monster_id]" />
 
-              <PrettyJsonView data={monsterRenewal} />
+              <JsonViewer data={monsterRenewal} />
 
               {/* <DocTable tableInfo={tableOldTimesMonster} /> */}
 
@@ -164,7 +188,7 @@ function Documentation() {
 
               <DocPath route={monster.restart} db="[monster_id]" />
 
-              <PrettyJsonView data={monsterRestart} />
+              <JsonViewer data={monsterRestart} />
 
               {/* <DocTable tableInfo={tableOldTimesMonster} /> */}
             </section>
@@ -176,7 +200,7 @@ function Documentation() {
 
               <DocPath route={items.oldTimes} db="[monster_id]" />
 
-              <PrettyJsonView data={itemOldTimes} />
+              <JsonViewer data={itemOldTimes} />
 
               {/* <DocTable tableInfo={tableOldTimesMonster} /> */}
 
@@ -184,7 +208,7 @@ function Documentation() {
 
               <DocPath route={items.renewal} db="[monster_id]" />
 
-              <PrettyJsonView data={itemRenwal} />
+              <JsonViewer data={itemRenwal} />
 
               {/* <DocTable tableInfo={tableOldTimesMonster} /> */}
 
@@ -192,7 +216,7 @@ function Documentation() {
 
               <DocPath route={items.restart} db="[monster_id]" />
 
-              <PrettyJsonView data={itemRestart} />
+              <JsonViewer data={itemRestart} />
 
               {/* <DocTable tableInfo={tableOldTimesMonster} /> */}
             </section>

@@ -14,12 +14,15 @@
   border-bottom-right-radius: 10px;
   border-bottom-left-radius: 10px;
 
-  h1 {
+  .logo {
     flex: 1;
+    font-weight: 700;
   }
 
-  nav {
-    a {
+  .nav {
+    display: flex;
+
+    .navLink {
       padding: 0 1rem;
     }
   }
@@ -27,6 +30,26 @@
 
 @media (max-width: 767px) {
   .container {
-    width: 50rem;
+    width: 100%;
+    height: auto;
+    flex-wrap: wrap;
+    padding: 0.75rem 1rem;
+    gap: 0.5rem;
+
+    .logo {
+      flex: 1 1 100%;
+      text-align: center;
+    }
+
+    .nav {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+
+      .navLink {
+        padding: 0.25rem 0.6rem;
+      }
+    }
   }
 }

@@ -32,6 +32,12 @@
   }
 }
 
+@media (max-width: 767px) {
+  body {
+    overflow-x: hidden;
+  }
+}
+
 body {
   background: var(--lightblue-200);
   color: var(--gray-300);

@@ -32,8 +32,11 @@
 
 @media (max-width: 767px) {
   .copyright {
-    width: 40rem;
-    height: 18rem;
+    width: calc(100% - 2rem);
+    max-width: 1120px;
+    height: auto;
+    margin: 0 auto 3rem;
+    padding-bottom: 1.5rem;
     a {
       width: 100%;
       font-size: 2rem;

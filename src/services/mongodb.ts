@@ -1,62 +1,120 @@
-import { MongoClient } from 'mongodb';
+import { Db, MongoClient } from 'mongodb';
+
+const mongoUri = process.env.MONGODB;
+if (!mongoUri) {
+  throw new Error('Missing MONGODB environment variable');
+}
+
+type MongoCache = {
+  client: MongoClient | null;
+  promise: Promise<MongoClient> | null;
+  connectCalls: number;
+  connectedLogEmitted: boolean;
+  shutdownHookRegistered: boolean;
+};
 
 declare global {
-  namespace NodeJS {
-    interface Global {
-      mongo: any;
-    }
-  }
+  // eslint-disable-next-line no-var
+  var _mongoCache: MongoCache | undefined;
 }
 
-// eslint-disable-next-line
-let cached = global.mongo;
-if (!cached) cached = global.mongo = {};
+const cached: MongoCache =
+  globalThis._mongoCache ?? {
+    client: null,
+    promise: null,
+    connectCalls: 0,
+    connectedLogEmitted: false,
+    shutdownHookRegistered: false,
+  };
 
-export async function mongoConnect() {
-  if (cached.conn) return cached.conn;
+if (!globalThis._mongoCache) {
+  globalThis._mongoCache = cached;
+}
+
+const clientOptions = {
+  maxPoolSize: 20,
+  minPoolSize: 0,
+  maxIdleTimeMS: 60000,
+  waitQueueTimeoutMS: 10000,
+  serverSelectionTimeoutMS: 5000,
+  connectTimeoutMS: 10000,
+};
+
+async function connectClient() {
   if (!cached.promise) {
-    const conn: any = {};
-    const opts = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    };
-    cached.promise = MongoClient.connect(process.env.MONGODB, opts)
-      .then((client) => {
-        conn.client = client;
-        return client;
-      })
-      .then((db) => {
-        conn.db = db;
-        cached.conn = conn;
-      });
+    cached.connectCalls += 1;
+    const client = new MongoClient(mongoUri, clientOptions);
+    cached.promise = client.connect().then((connectedClient) => {
+      cached.client = connectedClient;
+      if (!cached.connectedLogEmitted) {
+        console.info('Mongo connected');
+        cached.connectedLogEmitted = true;
+      }
+      return connectedClient;
+    });
   }
 
-  await cached.promise;
-  return cached.conn;
+  return cached.promise;
 }
 
-async function findMonster(
-  client: MongoClient,
-  dbName: string,
-  monster: string
-) {
-  const databasesList = await client
-    .db(dbName)
-    .collection('monsters')
-    .find({
-      monster_id: { $eq: Number(monster) },
-    });
+function registerShutdownHooks() {
+  if (cached.shutdownHookRegistered || typeof process === 'undefined') {
+    return;
+  }
+
+  cached.shutdownHookRegistered = true;
+  const shutdown = async () => {
+    if (!cached.client) return;
+    try {
+      await cached.client.close();
+      console.info('Mongo client closed');
+    } catch (error) {
+      console.error('Mongo close failed', error);
+    }
+  };
+
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
+}
+
+registerShutdownHooks();
+
+export async function getClient() {
+  if (cached.client) return cached.client;
+  return connectClient();
+}
+
+export async function getDb(dbName: string) {
+  const client = await getClient();
+  return client.db(dbName);
+}
+
+export function getMongoConnectCalls() {
+  return cached.connectCalls;
+}
+
+function normalizeQueryValue(value: string | string[]) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+async function findMonster(db: Db, monster: string | string[]) {
+  const monsterId = Number(normalizeQueryValue(monster));
+  if (Number.isNaN(monsterId)) return [];
+
+  const databasesList = await db.collection('monsters').find({
+    monster_id: { $eq: monsterId },
+  });
 
   const result = await databasesList.toArray();
 
   return result;
 }
 
-export async function getMonster(client, dbName, monster) {
+export async function getMonster(db: Db, monster: string | string[]) {
   let monsters = [];
 
   try {
-    monsters = await findMonster(client, dbName, monster);
+    monsters = await findMonster(db, monster);
   } catch (error) {
     console.log(error);
   }
@@ -64,28 +122,24 @@ export async function getMonster(client, dbName, monster) {
   return monsters;
 }
 
-async function findItem(
-  client: MongoClient,
-  dbName: string,
-  item: string
-) {
-  const databasesList = await client
-  .db(dbName)
-  .collection('items')
-  .find({
-    id: { $eq: Number(item) },
+async function findItem(db: Db, item: string | string[]) {
+  const itemId = Number(normalizeQueryValue(item));
+  if (Number.isNaN(itemId)) return [];
+
+  const databasesList = await db.collection('items').find({
+    id: { $eq: itemId },
   });
-  
+
   const result = await databasesList.toArray();
 
   return result;
 }
 
-export async function getItems(client, dbName, item) {
+export async function getItems(db: Db, item: string | string[]) {
   let items = [];
 
   try {
-    items = await findItem(client, dbName, item);
+    items = await findItem(db, item);
   } catch (error) {
     console.log(error);
   }

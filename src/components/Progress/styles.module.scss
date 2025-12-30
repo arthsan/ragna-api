@@ -5,7 +5,7 @@
   color: var(--lightblue-100);
   background-color: var(--lightblue-500);
   height: 4rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem;
   border-radius: 10px;
 
   ul {
@@ -71,15 +71,23 @@
 
 @media (max-width: 767px) {
   .container {
-    width: 50rem;
+    width: 100%;
+    padding: 0 1rem;
+    height: auto;
+    flex-direction: column;
+    margin: 0.75rem 0;
     h3 {
       font-size: 1.5rem;
     }
 
     ul {
+      flex-wrap: wrap;
+      justify-content: center;
+      row-gap: 0.5rem;
       li {
         font-size: 1.3rem;
-        padding-right: 2rem;
+        padding-right: 1.5rem;
+        margin-left: 0.5rem;
       }
     }
   }
