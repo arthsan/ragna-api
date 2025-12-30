@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const globby = require('globby');
+const { globby } = require('globby');
 const prettier = require('prettier');
 
 (async () => {
@@ -25,9 +25,11 @@ const prettier = require('prettier');
                   .replace('.tsx', '')
                   .replace('.mdx', '');
                 const route = path === '/index' ? '' : path;
+                const lastmod = fs.statSync(page).mtime.toISOString();
                 return `
                         <url>
                             <loc>${`https://ragnapi.com${route}`}</loc>
+                            <lastmod>${lastmod}</lastmod>
                         </url>
                     `;
               })
@@ -35,7 +37,7 @@ const prettier = require('prettier');
         </urlset>
     `;
 
-  const formatted = prettier.format(sitemap, {
+  const formatted = await prettier.format(sitemap, {
     ...prettierConfig,
     parser: 'html',
   });

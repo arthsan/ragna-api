@@ -32,3 +32,13 @@
     cursor: auto;
   }
 }
+
+@media (max-width: 767px) {
+  .button {
+    width: calc(33.333% - 1rem);
+    min-width: 90px;
+    height: 2.5rem;
+    font-size: 0.9rem;
+    margin: 4px;
+  }
+}

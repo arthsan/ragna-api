@@ -1,12 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getMonster, mongoConnect } from '../../../../../services/mongodb'
+import { getDb, getMonster } from '../../../../../services/mongodb'
+import { setApiCache } from 'lib/api-cache'
 
 
 const oldTimes = async (req: NextApiRequest, res: NextApiResponse) => {
-  const {client} = await mongoConnect();
   const { monster } = req.query
+  const db = await getDb('old-times')
 
-  const oldTimes = await getMonster(client, 'old-times', monster);
+  const oldTimes = await getMonster(db, monster)
+  setApiCache(res)
   res.status(200).json(oldTimes[0])
 }
 

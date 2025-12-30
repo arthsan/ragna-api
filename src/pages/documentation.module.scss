@@ -127,22 +127,24 @@
     position: static;
     margin-bottom: 1rem;
     z-index: 0;
+    padding: 0;
   }
 
   .content {
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     padding-bottom: 3rem;
+    padding: 1.25rem;
   }
 
   .container {
     flex-direction: column;
     justify-content: space-around;
-    margin: 0 3rem 0 5rem;
-    width: 71ch;
+    margin: 0 1rem;
+    width: 100%;
 
     h2 {
-      font-size: 2rem;
+      font-size: 1.5rem;
     }
 
     p {
@@ -163,11 +165,26 @@
 
   .route {
     & section > div {
-      margin: 2rem 1rem;
+      margin: 1.5rem 0;
     }
 
     & section > label {
       font-size: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      width: 100%;
+
+      button {
+        margin-right: 0;
+      }
     }
+  }
+}
+
+@media (max-width: 520px) {
+  .container {
+    margin: 0 0.75rem;
   }
 }

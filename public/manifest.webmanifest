@@ -1,0 +1,20 @@
+{
+  "name": "RagnaAPI",
+  "short_name": "RagnaAPI",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0e6ab6",
+  "icons": [
+    {
+      "src": "/images/blue-poring.png",
+      "sizes": "250x210",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/yes.png",
+      "sizes": "18x18",
+      "type": "image/png"
+    }
+  ]
+}

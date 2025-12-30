@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, { FormEvent, useEffect, useState } from 'react'
-import PrettyJsonView from 'pretty-json-view'
+import { JsonViewer } from 'components/JsonViewer'
 import styles from './styles.module.scss'
 
 interface SearchBarProps {
@@ -64,7 +64,9 @@ export function SearchBar({
           <h4>
             Resource for {resourceDb} {resourceActive}: {searchId}
           </h4>
-          <PrettyJsonView data={result} />
+          <div className={styles.viewer}>
+            <JsonViewer data={result} />
+          </div>
         </>
       )}
     </div>

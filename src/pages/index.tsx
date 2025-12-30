@@ -1,5 +1,3 @@
-import Head from 'next/head'
-import styles from './home.module.scss'
 import { SearchBar } from '../components/SearchBar'
 
 import { Footer } from 'components/Footer'
@@ -10,6 +8,8 @@ import { Progress } from 'components/Progress'
 import { SelectSession } from 'components/SelectSession'
 import { GetServerSideProps } from 'next'
 import axios from 'axios'
+import { Seo } from 'components/Seo'
+import { siteName, siteUrl } from 'lib/seo'
 
 export interface ActiveServer {
   db: string
@@ -59,11 +59,42 @@ export default function Home({ data }) {
     }
   }
 
+  const description =
+    'RagnaAPI is a public Ragnarok Online REST API for monsters, items, skills, and more. Fast, simple, and ready for bots, dashboards, and tools.'
+
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: siteName,
+      url: siteUrl,
+      logo: `${siteUrl}/images/ragtitle.png`,
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: siteName,
+      url: siteUrl,
+      description,
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: 'RagnaAPI — Ragnarok Online REST API (Monsters, Items, Skills, Maps)',
+      url: siteUrl,
+      description,
+    },
+  ]
+
   return (
     <>
-      <Head>
-        <title>Ragnarok Online API</title>
-      </Head>
+      <Seo
+        title="RagnaAPI — Ragnarok Online REST API (Monsters, Items, Skills, Maps)"
+        description={description}
+        path="/"
+        ogType="website"
+        jsonLd={jsonLd}
+      />
       <Header />
       <Main />
       <Progress />

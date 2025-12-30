@@ -1,11 +1,13 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getMonster, mongoConnect } from '../../../../../services/mongodb'
+import { getDb, getMonster } from '../../../../../services/mongodb'
+import { setApiCache } from 'lib/api-cache'
 
 const reNewal = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { client } = await mongoConnect()
   const { monster } = req.query
+  const db = await getDb('re-newal')
 
-  const reNewal = await getMonster(client, 're-newal', monster)
+  const reNewal = await getMonster(db, monster)
+  setApiCache(res)
   res.status(200).json(reNewal[0])
 }
 
