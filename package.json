@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@vercel/analytics": "^1.6.1",
     "axios": "^0.21.1",
     "dotenv": "^10.0.0",
     "fs": "^0.0.1-security",

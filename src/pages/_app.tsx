@@ -1,5 +1,6 @@
 import { AppProps } from 'next/dist/next-server/lib/router/router'
 import Script from 'next/script'
+import { Analytics } from '@vercel/analytics/next'
 import '../styles/globals.scss'
 import '../styles/json-viewer.scss'
 
@@ -21,6 +22,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           `}
       </Script>
       <Component {...pageProps} />
+      <Analytics />
     </>
   )
 }
