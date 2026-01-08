@@ -4,6 +4,7 @@ import type { GetServerSideProps } from 'next';
 import { globby } from 'globby';
 
 const SITE_URL = 'https://ragnapi.com';
+const PUBLIC_ROUTES = ['/', '/documentation', '/about'];
 
 const pageGlobs = [
   'src/pages/*.tsx',
@@ -31,6 +32,10 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     '.next/server/pages-manifest.json',
   );
   let urls: string[] = [];
+  const normalizeRoute = (route: string) => {
+    if (route === '/index' || route === '/') return '';
+    return route;
+  };
 
   if (fs.existsSync(manifestPath)) {
     const manifest = JSON.parse(
@@ -47,16 +52,29 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
       return true;
     });
 
-    urls = routes.map((route) => {
-      const normalizedRoute = route === '/index' ? '' : route;
+    const routeSet = new Set<string>(
+      routes.map((route) => normalizeRoute(route)),
+    );
+    PUBLIC_ROUTES.forEach((route) => {
+      routeSet.add(normalizeRoute(route));
+    });
+
+    urls = Array.from(routeSet).map((route) => {
+      const manifestEntry =
+        route === ''
+          ? manifest['/index'] ?? manifest['/']
+          : manifest[route];
+      const normalizedRoute = route;
       const filePath = path.join(
         process.cwd(),
         '.next/server',
-        manifest[route],
+        manifestEntry ?? '',
       );
       let lastmod = nowIso;
       try {
-        lastmod = fs.statSync(filePath).mtime.toISOString();
+        if (manifestEntry) {
+          lastmod = fs.statSync(filePath).mtime.toISOString();
+        }
       } catch {
         lastmod = nowIso;
       }
@@ -64,14 +82,32 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     });
   } else {
     const pages = await globby(pageGlobs);
-    urls = pages.map((page) => {
+    const routeSet = new Set<string>();
+    pages.forEach((page) => {
       const pagePath = page
         .replace('src/pages', '')
         .replace('data', '')
         .replace('.tsx', '')
         .replace('.mdx', '');
-      const route = pagePath === '/index' ? '' : pagePath;
-      const lastmod = fs.statSync(page).mtime.toISOString();
+      routeSet.add(normalizeRoute(pagePath));
+    });
+    PUBLIC_ROUTES.forEach((route) => {
+      routeSet.add(normalizeRoute(route));
+    });
+
+    urls = Array.from(routeSet).map((route) => {
+      const relativePage = route === '' ? 'index.tsx' : `${route}.tsx`;
+      const safeRelativePage = relativePage.replace(/^\//, '');
+      let lastmod = nowIso;
+      try {
+        lastmod = fs
+          .statSync(
+            path.join(process.cwd(), 'src/pages', safeRelativePage),
+          )
+          .mtime.toISOString();
+      } catch {
+        lastmod = nowIso;
+      }
       return buildUrlEntry(`${SITE_URL}${route}`, lastmod);
     });
   }
