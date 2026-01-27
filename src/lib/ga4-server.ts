@@ -2,8 +2,10 @@ import crypto from 'crypto'
 
 type Ga4EventParams = Record<string, string | number | boolean>
 
-const measurementId = process.env.NEXT_PUBLIC_GA_ID
+const measurementId =
+  process.env.GA4_MEASUREMENT_ID ?? process.env.NEXT_PUBLIC_GA_ID
 const apiSecret = process.env.GA4_API_SECRET
+const debugEnabled = process.env.GA4_DEBUG === 'true'
 
 const canTrackServerSide = () => !!measurementId && !!apiSecret
 
@@ -15,7 +17,10 @@ const createClientId = () => {
   return `${Date.now()}.${Math.floor(Math.random() * 1_000_000_000)}`
 }
 
-export const sendGa4ServerEvent = async (name: string, params: Ga4EventParams) => {
+export const sendGa4ServerEvent = async (
+  name: string,
+  params: Ga4EventParams,
+) => {
   if (!canTrackServerSide()) return
 
   const payload = {
@@ -23,7 +28,7 @@ export const sendGa4ServerEvent = async (name: string, params: Ga4EventParams) =
     events: [
       {
         name,
-        params,
+        params: debugEnabled ? { ...params, debug_mode: true } : params,
       },
     ],
   }
