@@ -1,5 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
+import { trackEvent } from 'lib/analytics'
 import styles from './styles.module.scss'
 
 export function Main() {
@@ -21,6 +22,18 @@ export function Main() {
     } catch {
       // Best-effort copy; no-op on failure.
     }
+  }
+
+  const handleOutboundLink = (
+    label: string,
+    url: string,
+    location: string,
+  ) => {
+    trackEvent('outbound_link', {
+      link_text: label,
+      link_url: url,
+      link_location: location,
+    })
   }
 
   return (
@@ -52,7 +65,18 @@ export function Main() {
         <div className={styles.links}>
           <a href="/documentation">Documentation</a>
           <a href="/about">About the project</a>
-          <a href="https://github.com/arthsan/ragna-api">GitHub</a>
+          <a
+            href="https://github.com/arthsan/ragna-api"
+            onClick={() =>
+              handleOutboundLink(
+                'GitHub',
+                'https://github.com/arthsan/ragna-api',
+                'home_get_started',
+              )
+            }
+          >
+            GitHub
+          </a>
         </div>
         <div className={styles.endpoints}>
           {endpoints.map((endpoint) => (
@@ -63,7 +87,14 @@ export function Main() {
               </div>
               <button
                 type="button"
-                onClick={() => handleCopy(endpoint.url)}
+                onClick={() => {
+                  trackEvent('copy_endpoint', {
+                    endpoint_label: endpoint.label,
+                    endpoint_url: endpoint.url,
+                    endpoint_location: 'home_get_started',
+                  })
+                  handleCopy(endpoint.url)
+                }}
                 aria-label={`Copy ${endpoint.label} endpoint`}
               >
                 Copy

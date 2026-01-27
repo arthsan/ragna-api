@@ -1,13 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getClient, getMongoConnectCalls } from '../../../services/mongodb'
 import { setApiCache } from 'lib/api-cache'
+import { withApiAnalytics } from 'lib/api-analytics'
 
 type HealthResponse = {
   connectCalls: number
   isConnected: boolean
 }
 
-export default async function handler(
+async function handler(
   _req: NextApiRequest,
   res: NextApiResponse<HealthResponse>,
 ) {
@@ -26,3 +27,5 @@ export default async function handler(
     isConnected,
   })
 }
+
+export default withApiAnalytics(handler, { resourceType: 'health' })
