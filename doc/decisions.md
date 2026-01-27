@@ -1,5 +1,23 @@
 # decisions.md
 
+## 2026-01-27 - GA4 gtag.js with manual SPA pageviews and UI events
+
+- Date: 2026-01-27
+- Context: Current analytics setup used an old UA ID and relied on automatic pageviews, which can duplicate in a SPA. The project needs GA4 with consistent events for core UI actions.
+- Decision: Move to GA4 via gtag.js using NEXT_PUBLIC_GA_ID at runtime, disable automatic pageviews, and send manual page_view events on route changes. Add initial UI events (copy endpoint, outbound link, search submit).
+- Alternatives considered: Use Google Tag Manager; keep auto pageviews.
+- Consequences: More reliable pageview counts in the SPA and clearer event taxonomy; requires GA4 Measurement ID in runtime env.
+- Links: doc/plan-ga4.md
+
+## 2026-01-27 - GA4 Measurement Protocol for API route usage
+
+- Date: 2026-01-27
+- Context: Need server-side analytics for API usage across all routes in `src/pages/api/**`.
+- Decision: Add a GA4 Measurement Protocol client that sends `api_request` events with route, method, status, latency, resource type, and db. Wrap all API handlers with a shared `withApiAnalytics` helper to keep instrumentation consistent.
+- Alternatives considered: Instrument each handler manually; rely only on frontend analytics.
+- Consequences: Server-side events are sent on a best-effort basis and require `GA4_API_SECRET` and `NEXT_PUBLIC_GA_ID` at runtime.
+- Links: doc/plan-ga4.md
+
 ## 2025-12-29 - MongoDB connection singleton and pool configuration
 
 - Date: 2025-12-29

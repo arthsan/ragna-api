@@ -1,6 +1,7 @@
 import axios from 'axios'
 import React, { FormEvent, useEffect, useState } from 'react'
 import { JsonViewer } from 'components/JsonViewer'
+import { trackEvent } from 'lib/analytics'
 import styles from './styles.module.scss'
 
 interface SearchBarProps {
@@ -27,6 +28,12 @@ export function SearchBar({
 
   async function handleSearch(event: FormEvent) {
     event.preventDefault()
+
+    trackEvent('search_submit', {
+      query: String(search),
+      category: activeSearch,
+      db: activeDb,
+    })
 
     try {
       const response = await axios.get(
