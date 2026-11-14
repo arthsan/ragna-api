@@ -1,5 +1,14 @@
 # decisions.md
 
+## 2026-11-14 - Read-only MCP stdio adapter for existing lookups
+
+- Date: 2026-11-14
+- Context: The evolution roadmap starts with MCP tools, then verified/versioned item data, simulator, calculator and UI refinement. Only five v1 lookup routes currently exist; dataset source, completeness and patch alignment are not established.
+- Decision: Add an optional Node.js 22+ stdio process with two read-only tools for the existing routes. Separate protocol, HTTP adapter and transport. Use Node built-ins, strict JSDoc typechecking, bounded serial requests, exact era/ID validation, fixed allowed upstream origins, no redirects or retries, and synthetic fixtures.
+- Alternatives considered: Add a public HTTP MCP endpoint (larger transport/security surface); query MongoDB directly (credentials and coupling); introduce an SDK (new dependency); expand datasets or UI immediately (unverified sources and too much scope).
+- Consequences: No REST, Next.js configuration, database, dataset or UI changes. No dependency on draft PR #6 and no duplicated environment fix. The minimal protocol subset needs actual-client compatibility review before broader adoption. Responses explicitly mark dataset version, source verification and coverage as unknown.
+- Links: doc/mcp.md, doc/testing-mcp.md; https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+
 ## 2026-01-27 - GA4 gtag.js with manual SPA pageviews and UI events
 
 - Date: 2026-01-27
