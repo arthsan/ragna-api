@@ -77,3 +77,48 @@ tooling migration is separate from this MCP increment.
   sprites, UI/browser validation, merge, manual deploy or production changes.
 - Source/license/version/coverage verification and actual-client compatibility
   remain future work; fixtures cannot establish production data coverage.
+
+## Follow-up: existing local tooling and independent client
+
+A second read-only inspection on 2026-11-14 checked whether the outstanding
+checks could run without installing dependencies:
+
+- The isolated checkout still has no `node_modules` containing TypeScript, Next,
+  ESLint or the official JavaScript MCP SDK.
+- The existing `node:22-alpine` image reports Node `v22.23.4`. A new disposable
+  container, with no network, reported all four packages absent from its global
+  Node package directory. No existing container or service was used.
+- No `tsc`, `eslint`, `mcp`, `uv` or `uvx` command was found on the host PATH.
+  Inspection of installed global npm tooling and Codex plugin package directories
+  found no standalone TypeScript, Next, ESLint, Node type package or
+  `@modelcontextprotocol/sdk` package usable in an isolated check.
+- Python 3.14 package metadata reports `mcp` is not installed. No Python SDK/client
+  code was imported or executed. Installed assistant CLIs were not launched as a
+  substitute for an independent MCP SDK test.
+
+Only executable discovery and package-file metadata were inspected. No package
+installation, credential/environment-file access, configuration/security change,
+existing service, production endpoint or external network from the server was
+needed.
+
+Consequently the outstanding checks remain **not executed**:
+
+| Check | Concrete blocker |
+| --- | --- |
+| MCP strict JSDoc typecheck | TypeScript and Node type definitions are unavailable |
+| Application TypeScript check | TypeScript and application dependencies are unavailable |
+| ESLint analysis | ESLint/application dependencies are unavailable; the existing `next lint` command also requires migration |
+| Next production build locally | Next/application dependencies are unavailable |
+| Independent official SDK or third-party MCP client over local stdio | No standalone client/SDK is available in the inspected local toolchains |
+
+The 40 passing tests recorded above apply to implementation commit
+`debad695ac1cd3dde113002a4c9022e834fc4476`. This follow-up changes only this validation
+record; the implementation and tests are unchanged, so the suite was not repeated.
+The documentation diff passes `git diff --cached --check`.
+
+An external preview status is not treated as evidence that the separate
+`tsconfig.mcp.json` or independent-client checks ran. Preview logs are being
+assessed separately; this local follow-up makes no additional CI/build claim.
+The PR remains draft. No merge, readiness transition or manual deployment is
+authorized by this record. The next validation needs an already prepared,
+compatible dependency/client environment and isolated synthetic fixtures.
