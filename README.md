@@ -39,6 +39,11 @@ curl https://ragnapi.com/api/v1/re-newal/items/501
 
 ## How it works (in this repository)
 
+An optional read-only MCP stdio adapter exposes these existing lookups as
+`ragna_get_monster` and `ragna_get_item`. Run `node mcp/server.mjs` with Node.js 22+
+and configure your MCP client using [the tool contract and setup](doc/mcp.md).
+It adds no dependencies; dataset provenance, version and completeness remain unverified.
+
 This project uses **Next.js (Pages Router)** to serve:
 
 - website pages (`src/pages/*.tsx`)

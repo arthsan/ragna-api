@@ -1,5 +1,21 @@
 # decisions.md
 
+## 2026-11-14 - Synchronize the MCP branch after the MongoDB fix merged
+
+- Context: Main advanced to `b37ffaa8be2e3fcddf0569601de12a6b70edd08a` by merging PR #6. Both PRs had prepended entries to this decision log, causing the MCP PR #7 to conflict.
+- Decision: Merge that main commit into `feat/mcp-read-only-stdio-20261114` without rewriting history. Preserve both decision entries, the main branch's server-only MongoDB fix and regression files, and the MCP implementation/contracts. Revalidate the combined source with synthetic inputs.
+- Consequences: Only this feature branch is synchronized. PR #7 retains the owner's ready-for-review state. No merge to main, manual deployment, Node/dependency upgrade, or PR #8 change is part of this operation.
+- Links: doc/testing-mcp.md; https://github.com/arthsan/ragna-api/pull/6; https://github.com/arthsan/ragna-api/pull/7
+
+## 2026-11-14 - Read-only MCP stdio adapter for existing lookups
+
+- Date: 2026-11-14
+- Context: The evolution roadmap starts with MCP tools, then verified/versioned item data, simulator, calculator and UI refinement. Only five v1 lookup routes currently exist; dataset source, completeness and patch alignment are not established.
+- Decision: Add an optional Node.js 22+ stdio process with two read-only tools for the existing routes. Separate protocol, HTTP adapter and transport. Use Node built-ins, strict JSDoc typechecking, bounded serial requests, exact era/ID validation, fixed allowed upstream origins, no redirects or retries, and synthetic fixtures.
+- Alternatives considered: Add a public HTTP MCP endpoint (larger transport/security surface); query MongoDB directly (credentials and coupling); introduce an SDK (new dependency); expand datasets or UI immediately (unverified sources and too much scope).
+- Consequences: No REST, Next.js configuration, database, dataset or UI changes. No dependency on draft PR #6 and no duplicated environment fix. The minimal protocol subset needs actual-client compatibility review before broader adoption. Responses explicitly mark dataset version, source verification and coverage as unknown.
+- Links: doc/mcp.md, doc/testing-mcp.md; https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+
 ## 2026-11-14 - Keep MongoDB configuration server-only
 
 - Context: `next.config.js` included `MONGODB` in its build-time `env` export,
