@@ -1,6 +1,91 @@
 # MCP validation record — 2026-11-14
 
-## Scope and environment
+## Current status: later cloud verification
+
+The coordinating agent verified head
+`53b8f6948d03602629d655e7a4659e3919c04c04` in a separate cloud sandbox using
+TypeScript **5.9.3**, Next.js **16.1.1** and the official Python MCP SDK
+**1.29.0**, all already installed before these checks. TypeScript/Next had been
+used for PR #6. No dependencies were installed for this verification.
+
+The 56 inherited files under the source/public/configuration/lock scope were
+checked against their GitHub blob SHAs. Normalization removed only an extra
+trailing newline introduced by the materializer. MCP implementation files,
+tests, `package.json`, `tsconfig.mcp.json` and `next.config.js` came from the
+verified head. The following checks were rerun after that normalization:
+
+| Check | Cloud result |
+| --- | --- |
+| MCP strict JSDoc typecheck (`tsconfig.mcp.json`) | Passed, exit 0, TypeScript 5.9.3 |
+| Application `tsc --noEmit --incremental false` | Passed, exit 0 |
+| MCP test suite | Passed, 40/40, zero skips |
+| `next build` | Passed, exit 0, Next 16.1.1, sanitized environment and only a fictitious `MONGODB` sentinel |
+| Existing `next lint` script | Failed: `Invalid project directory .../lint`; this command was removed in Next 16 |
+| Focused ESLint analysis of `mcp tests` | Passed, exit 0, ESLint 9.39.2 and eslint-config-next 16.1.1 under an experimental flat config in the sandbox |
+| ESLint analysis of `src mcp tests` under that config | Failed: four pre-existing source errors and seven warnings; details below |
+| Official Python SDK client over stdio | Passed, exit 0, SDK `mcp` 1.29.0; details below |
+
+No production application or database was accessed. These are sandbox results,
+not production-data, source-license or dataset-coverage validation. This update
+changes documentation only; implementation and test contents remain unchanged.
+
+The independent interoperability check used the official SDK's `ClientSession`
+and `stdio_client` against `mcp/server.mjs` from that head, with an HTTP loopback
+fixture containing synthetic records. It verified:
+
+- Protocol negotiation to `2025-11-25`, initialization, discovery of exactly two
+  tools and `ping`.
+- `ragna_get_item` with `old-times`/1001 and `ragna_get_monster` with
+  `re-newal`/1001.
+- An invalid `re-start` item request returning `isError` and a clean disconnect.
+- Exactly two GETs reaching the fixture:
+  `/api/v1/old-times/items/1001` and
+  `/api/v1/re-newal/monsters/1001`.
+
+This establishes compatibility with that SDK version and those flows, not all
+MCP clients or optional protocol features. The independent test script remained
+in the cloud sandbox; it was not added to the repository's automated suite.
+
+The focused lint check used a sandbox-only `qa-eslint.config.mjs` built with
+`defineConfig([...nextVitals, globalIgnores([...])])`, where `nextVitals` is
+`eslint-config-next/core-web-vitals` and the global ignores are `.next/**`,
+`out/**`, `build/**` and `next-env.d.ts`:
+
+```sh
+eslint --config qa-eslint.config.mjs mcp tests
+```
+
+The same configuration applied to `src mcp tests` found four errors inherited
+from the existing application: two internal anchor links in `Main` pointing to
+documentation/about, one internal anchor link in `about`, and synchronous
+`set_window(window)` inside the `SearchBar` effect. Seven warnings included
+image usage in `about`, a MongoDB ESLint-disable directive and a fixture's
+default export. This is a real lint failure, distinct from the obsolete command
+failure. No rules were disabled and no repository application or configuration
+file was changed. The sandbox experiment demonstrates that the existing lint dependency
+versions can run the MCP checks; it does not make the repository-wide lint green.
+
+GitHub's Vercel status was confirmed as `success` for head `53b8f694...`.
+Detailed preview logs could not be audited because team access returned HTTP
+403. The Vercel status is separate from the explicit sandbox checks above and
+does not establish that Vercel ran the MCP typecheck or independent client test.
+
+**Remaining work:** migrate the obsolete lint command and legacy configuration,
+then address the inherited application lint findings in a separate quality PR
+without disabling rules. General lint remains failed; focused MCP lint passed.
+Broader MCP-client compatibility and dataset origin/license/version/coverage
+remain unverified. Preview log review remains unavailable.
+The PR remains draft; no merge or manual deployment was performed.
+
+## Windows validation history
+
+The records below describe the earlier Windows checkout and its clean Node
+container. Their missing-tool observations remain valid for those inspected
+environments; their compiler/build/client gaps were subsequently resolved by the
+specific cloud checks above. General application lint still fails. They do not
+claim that the dependencies were absent from every environment.
+
+## Scope and Windows environment
 
 Source base: `main` at `625dadb4a8faab85389231b50ad193f33b5e3df8`.
 The isolated checkout was clean before the feature branch was created.
@@ -17,7 +102,7 @@ credentials, a private 256 MiB scratch tmpfs, user 1000, dropped capabilities,
 one CPU, 512 MiB RAM, 64 processes, file-size/CPU limits and a 45-second deadline.
 Loopback fixtures exist only inside that container. No existing services are used.
 
-## Passed
+## Earlier Windows checks passed
 
 - Final verification: 40 Node tests passed, 0 failures, 0 skipped. This includes
   the independent review corrections and rejection of invalid upstream UTF-8 JSON
@@ -29,7 +114,7 @@ Loopback fixtures exist only inside that container. No existing services are use
 - All five implemented route combinations, synthetic records only.
 - Bounds, sanitized failures, strict argument validation, framing and backpressure.
 
-## Failed command attempts (environment)
+## Earlier Windows command failures (environment)
 
 All four commands were attempted in a disposable scratch copy with external
 network disabled. A fictitious `MONGODB` sentinel was supplied; no database was
@@ -53,7 +138,7 @@ that command ([official Next 16 upgrade guide](https://nextjs.org/docs/app/guide
 The missing executable prevented observing that next-stage failure here. Lint
 tooling migration is separate from this MCP increment.
 
-## Not executed
+## Checks not executed in the Windows environment
 
 - Actual TypeScript, ESLint and Next build analysis, because their commands
   stopped before reaching those tools as described above.
@@ -62,7 +147,7 @@ tooling migration is separate from this MCP increment.
 - Production data/API/database checks, credential exposure assessment, browser/UI
   checks, and deployment. They are outside this increment.
 
-## Review and limits
+## Source review and limits at the Windows stage
 
 - `security-audit` used in focused guidance mode: reviewed URL/input boundaries,
   read-only effects, timeout/body limits, error disclosure and untrusted record data.
@@ -78,7 +163,7 @@ tooling migration is separate from this MCP increment.
 - Source/license/version/coverage verification and actual-client compatibility
   remain future work; fixtures cannot establish production data coverage.
 
-## Follow-up: existing local tooling and independent client
+## Windows follow-up: existing local tooling and independent client
 
 A second read-only inspection on 2026-11-14 checked whether the outstanding
 checks could run without installing dependencies:
