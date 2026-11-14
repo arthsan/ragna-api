@@ -1,5 +1,22 @@
 # decisions.md
 
+## 2026-11-14 - Keep MongoDB configuration server-only
+
+- Context: `next.config.js` included `MONGODB` in its build-time `env` export,
+  although source references to the MongoDB service are limited to API routes.
+  This creates an unnecessary client-substitution risk; it is not evidence of
+  an actual credential leak.
+- Decision: Remove only that export. Retain `process.env.MONGODB` in the server
+  service, preserving runtime configuration and API behavior. Add focused config
+  regression tests and an optional post-build scan using a fictitious sentinel.
+- Alternatives: Rename the variable or rotate credentials. Neither is necessary
+  for this code boundary fix; no operational configuration or secrets are read
+  or changed.
+- Consequences: A future approved deployment requires `MONGODB` available to the
+  server runtime, as documented already. Existing deployments are not changed
+  by this PR. Build checks must use isolated fictitious configuration.
+- Validation: See `doc/testing-server-env.md`; no live database required.
+
 ## 2026-01-27 - GA4 gtag.js with manual SPA pageviews and UI events
 
 - Date: 2026-01-27
@@ -81,3 +98,4 @@
 - Alternatives considered: Leave metadata duplicated; rely on default tags.
 - Consequences: Improved crawlability and share previews; requires keeping metadata in sync per page.
 - Links: N/A
+
