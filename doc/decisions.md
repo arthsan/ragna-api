@@ -81,3 +81,11 @@
 - Alternatives considered: Leave metadata duplicated; rely on default tags.
 - Consequences: Improved crawlability and share previews; requires keeping metadata in sync per page.
 - Links: N/A
+
+## 2026-11-14 — Select Node 26 LTS per project
+
+- Context: The owner authorized current LTS alignment. Official sources confirm Node 26.13.1 and Vercel 26.x; this base had no Node selector.
+- Decision: Add `.nvmrc` 26.13.1 and `engines.node: 26.x`, preserving dependency declarations, scripts, lock and application code.
+- Alternatives considered: Retain the implicit runtime; bundle framework/tooling upgrades. Broader changes require their own evidence and PR.
+- Consequences: Static configuration checks passed using a Node 24.18.0 verification tool. Node 26 runtime/build/typecheck validation is blocked by the absence of a prepared local runtime/dependency environment and the no-install policy. The legacy `next lint` script remains a separate known issue. MongoDB #6 and MCP #7 are independent.
+- Links: [runtime evidence and sources](node-runtime.md), [setup](setup.md).

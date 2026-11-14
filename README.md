@@ -68,7 +68,7 @@ API routes set CDN-friendly cache headers via `Cache-Control` (e.g. Vercel). Sti
 
 ### Requirements
 
-- Node.js compatible with the Next.js version in `package.json`
+- Node.js 26.13.1 LTS (`.nvmrc`), with `engines.node: 26.x` for Vercel; [validation pending](doc/node-runtime.md)
 - Yarn (v1)
 - A MongoDB instance containing the expected databases/collections
 
