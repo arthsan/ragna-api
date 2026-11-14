@@ -1,5 +1,12 @@
 # decisions.md
 
+## 2026-11-14 - Synchronize the MCP branch after the MongoDB fix merged
+
+- Context: Main advanced to `b37ffaa8be2e3fcddf0569601de12a6b70edd08a` by merging PR #6. Both PRs had prepended entries to this decision log, causing the MCP PR #7 to conflict.
+- Decision: Merge that main commit into `feat/mcp-read-only-stdio-20261114` without rewriting history. Preserve both decision entries, the main branch's server-only MongoDB fix and regression files, and the MCP implementation/contracts. Revalidate the combined source with synthetic inputs.
+- Consequences: Only this feature branch is synchronized. PR #7 retains the owner's ready-for-review state. No merge to main, manual deployment, Node/dependency upgrade, or PR #8 change is part of this operation.
+- Links: doc/testing-mcp.md; https://github.com/arthsan/ragna-api/pull/6; https://github.com/arthsan/ragna-api/pull/7
+
 ## 2026-11-14 - Read-only MCP stdio adapter for existing lookups
 
 - Date: 2026-11-14
@@ -8,6 +15,23 @@
 - Alternatives considered: Add a public HTTP MCP endpoint (larger transport/security surface); query MongoDB directly (credentials and coupling); introduce an SDK (new dependency); expand datasets or UI immediately (unverified sources and too much scope).
 - Consequences: No REST, Next.js configuration, database, dataset or UI changes. No dependency on draft PR #6 and no duplicated environment fix. The minimal protocol subset needs actual-client compatibility review before broader adoption. Responses explicitly mark dataset version, source verification and coverage as unknown.
 - Links: doc/mcp.md, doc/testing-mcp.md; https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+
+## 2026-11-14 - Keep MongoDB configuration server-only
+
+- Context: `next.config.js` included `MONGODB` in its build-time `env` export,
+  although source references to the MongoDB service are limited to API routes.
+  This creates an unnecessary client-substitution risk; it is not evidence of
+  an actual credential leak.
+- Decision: Remove only that export. Retain `process.env.MONGODB` in the server
+  service, preserving runtime configuration and API behavior. Add focused config
+  regression tests and an optional post-build scan using a fictitious sentinel.
+- Alternatives: Rename the variable or rotate credentials. Neither is necessary
+  for this code boundary fix; no operational configuration or secrets are read
+  or changed.
+- Consequences: A future approved deployment requires `MONGODB` available to the
+  server runtime, as documented already. Existing deployments are not changed
+  by this PR. Build checks must use isolated fictitious configuration.
+- Validation: See `doc/testing-server-env.md`; no live database required.
 
 ## 2026-01-27 - GA4 gtag.js with manual SPA pageviews and UI events
 
@@ -90,3 +114,4 @@
 - Alternatives considered: Leave metadata duplicated; rely on default tags.
 - Consequences: Improved crawlability and share previews; requires keeping metadata in sync per page.
 - Links: N/A
+

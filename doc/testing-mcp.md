@@ -1,6 +1,53 @@
 # MCP validation record — 2026-11-14
 
-## Current status: later cloud verification
+## Current status: main synchronization after PR #6 merged
+
+PR #6 merged into main on 2026-11-14 at 19:32:41 UTC. Main commit
+`b37ffaa8be2e3fcddf0569601de12a6b70edd08a` is incorporated into the existing MCP
+branch from head `c7bd2a3dfc7a6e9f12bbf5ba1000c9c2e61f4268`, without force-push.
+The only merge conflict was the two new entries at the beginning of
+`doc/decisions.md`; both entries were retained.
+
+The main branch's `next.config.js`, `tests/server-env.test.cjs` and
+`doc/testing-server-env.md` are retained byte-for-byte. The MongoDB service and
+MCP implementation/test source are unchanged by the resolution. PR #8's Node
+work remains separate; there is no Node or dependency upgrade in this sync.
+
+Post-synchronization checks on the resolved tree, in the same isolated Node
+22.23.4 container setup documented below:
+
+- **Passed:** 40/40 MCP tests and both non-build MongoDB regression tests. The
+  combined run reports 43 tests, 42 passed, zero failed and one skipped.
+- **Skipped:** the optional built-browser-asset sentinel scan. It requires a
+  fresh build and `CHECK_BUILT_ENV=1`; no browser build exists in this Windows
+  checkout, so that scan was not represented as passed.
+- **Passed:** comparisons against main for the three MongoDB fix artifacts;
+  comparisons against the previous MCP head for `mcp`, `src`, MCP tests,
+  `package.json`, `yarn.lock` and `tsconfig.mcp.json`; and whitespace checking
+  of the PR diff against current main. No unresolved conflict entries remain.
+- **Passed:** an independent read-only review confirmed both decision entries,
+  preservation of the main fix and prior MCP source, and the documentation's
+  distinction between the new tests, the skipped scan and historical checks.
+- **Not rerun here:** build, application/MCP typechecks, focused ESLint and the
+  independent Python SDK client on the synchronized tree. Their tools remain
+  absent from this inspected Windows environment. No dependency was installed.
+  The coordinating cloud environment can revalidate the published merge using
+  its existing toolchain, including the post-build scan.
+
+Command used for the combined tests:
+
+```sh
+node --test --test-timeout=20000 tests/mcp-api.test.mjs tests/mcp-protocol.test.mjs tests/server-env.test.cjs
+```
+
+Earlier cloud results in the next section apply to their explicitly named head;
+they are not claimed as a new build/typecheck/client run or preview verification
+for this synchronization.
+
+The owner had already marked PR #7 ready for review. This synchronization does
+not change that state or authorize merging the PR into main or deploying it.
+
+## Earlier cloud verification before main synchronization
 
 The coordinating agent verified head
 `53b8f6948d03602629d655e7a4659e3919c04c04` in a separate cloud sandbox using

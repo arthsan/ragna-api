@@ -155,7 +155,8 @@ npm run lint
 npm run build
 ```
 
-Use only fictitious `MONGODB` values for a build, never real credentials. Keep the
-server-only environment correction in [PR #6](https://github.com/arthsan/ragna-api/pull/6)
-separate; this adapter neither depends on it nor duplicates it. See
+Use only fictitious `MONGODB` values for a build, never real credentials. The
+server-only environment correction from [merged PR #6](https://github.com/arthsan/ragna-api/pull/6)
+is inherited from main; this adapter does not duplicate that fix. The MCP branch
+was synchronized with main after that merge. See
 [the validation record](testing-mcp.md) for the checks actually completed here.
