@@ -12,7 +12,7 @@
 yarn install
 ```
 
-No dependencies were installed during this runtime update. Node 26 compatibility is pending; see [verification record](node-runtime.md).
+Cloud typechecks, build and synthetic HTTP/MCP checks passed on Node 26.13.1. Lint tooling and browser verification remain pending; see the [verification record](node-runtime.md).
 
 ## Development
 
