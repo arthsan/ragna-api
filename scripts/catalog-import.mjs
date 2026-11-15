@@ -1,6 +1,5 @@
-import { open } from 'node:fs/promises';
 import { importBundle } from '../src/catalog/importer.ts';
-import { MAX_BYTES } from '../src/catalog/contract.ts';
+import { readCatalogJson } from './catalog-files.mjs';
 
 export function parseArguments(args) {
   const [file, ...options] = args;
@@ -28,22 +27,7 @@ export function parseArguments(args) {
 }
 export async function run(args) {
   const options = parseArguments(args);
-  const handle = await open(options.file, 'r');
-  let input;
-  try {
-    const stat = await handle.stat();
-    if (!stat.isFile() || stat.size > MAX_BYTES) throw new Error('Expected a JSON file of at most 20 MiB');
-    // Bounded even if the file grows after stat; reject rather than truncate.
-    const buffer = Buffer.alloc(MAX_BYTES + 1);
-    let length = 0;
-    while (length < buffer.length) {
-      const { bytesRead } = await handle.read(buffer, length, buffer.length - length, null);
-      if (!bytesRead) break;
-      length += bytesRead;
-    }
-    if (length > MAX_BYTES) throw new Error('File exceeds 20 MiB');
-    input = JSON.parse(buffer.subarray(0, length).toString('utf8'));
-  } finally { await handle.close(); }
+  const { value: input } = await readCatalogJson(options.file);
   const plan = await importBundle(input);
   if (!options.apply) return plan;
   // Never reads MONGODB or any .env file; network destination is fixed loopback.

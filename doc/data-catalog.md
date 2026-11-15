@@ -87,7 +87,8 @@ means unknown, zero means free. Map IDs use [a-z0-9_@-], vendor IDs also allow
 colon. Coordinates and numeric IDs are bounded integers. Skills do not yet
 model formulas, jobs or per-level behavior; maps do not yet carry images,
 spawns/warps/geometry. Vendor/item foreign keys may target an unavailable
-catalog; cross-resource integrity reports are a remaining promotion gate.
+catalog. The diagnostic below reports these links without treating partial
+coverage as an invalid reference; source-backed resolution remains a review gate.
 
 ## Bundle and import contract
 
@@ -105,7 +106,9 @@ invalid records and unsubstantiated `complete` coverage are rejected before
 writes. Limits: 20 MiB input, 50,000 records per snapshot, 1,000 items per shop,
 250 records per write batch. Larger source catalogs require a reviewed extension
 with streaming validation; do not split snapshots and pretend each is complete.
-Record and object-key order are canonicalized for a SHA-256 snapshot digest.
+Records are sorted by the ASCII lexical representation of their IDs and object
+keys are sorted for a SHA-256 snapshot digest. This removes runtime/ICU collation
+variation before any real dataset is loaded.
 Use a new datasetId for changed content or provenance.
 
 Run on Node 22.18+ (native TypeScript stripping), preferably Node 24+; no new
@@ -133,7 +136,9 @@ Only new collections catalog_datasets/catalog_records are touched by this
 writer. Metadata reserves a dataset key `{era}/{resource}/{datasetId}` with
 insert-only upsert; an existing different digest fails. Records have deterministic
 _id values and insert-only upserts. Exact replay resumes interrupted batches;
-metadata becomes ready after the expected count is verified. Never delete or
+metadata becomes ready only after both the expected count and the SHA-256
+recomputed from the stored records and full provenance agree. Existing metadata
+is compared in full on replay, and the ready update must be acknowledged. Never delete or
 replace old datasets. There is no automatic retry, activation or cleanup.
 Partial failures leave loading snapshots that readers cannot select. Concurrent
 same-key first imports can encounter a unique-key race; rerun the exact bundle.
@@ -142,12 +147,68 @@ Treat stored snapshots as immutable and restrict write permissions accordingly.
 Public readers use a separate **ragna-catalog** database and three collections:
 catalog_active (reviewed era/resource pointer with dataset key and digest),
 catalog_datasets (ready, matching era/resource/digest, synthetic false), and
-catalog_records. Importing into a test DB never makes data public. No promotion
+catalog_records. The reader validates manifest schema/identity, enforces
+`pointer.datasetKey == manifest._id == manifest.key`, validates the record count
+and digest format, then reads and validates the entire selected snapshot and
+recomputes its digest. Truncated/extra/corrupted rows, unsupported metadata and
+synthetic-flag changes without a matching digest make the dataset unavailable;
+a missing ID becomes 404 only after the supplied snapshot passes verification.
+A snapshot can be internally intact while its game coverage remains partial.
+
+Reads close their cursor, stop at recordCount+1 / 20 MiB of record JSON, and set
+query maxTimeMS to 5 seconds. Verification runs on every uncached lookup, not on
+an unverified cached flag. This costs a full snapshot scan per cache miss and
+has not been performance-tested on real catalogs. Before public activation,
+provision an index on catalog_records.datasetKey and benchmark approved data;
+any future optimization must preserve equivalent integrity checks. Immutable
+snapshots and restricted writer access remain required; a digest is not proof
+that source or synthetic claims are true, nor a signature against an authorized
+writer rewriting data, metadata and the reviewed pointer together.
+
+Importing into a test DB never makes data public. No promotion
 writer is included. Public activation is a separate authorized operation after
 source/data review; fixtures must never be relabeled or copied into public data.
 Rollback for a future release is selecting the previously approved immutable
 snapshot, followed by CDN cache expiry (up to 360s); retained legacy data stays
 untouched. Actual provider/production changes are outside this PR.
+
+## Diagnose references across supplied bundles
+
+```sh
+node scripts/catalog-integrity.mjs tests/fixtures/catalog/vendors.json \
+  tests/fixtures/catalog/maps.json tests/fixtures/catalog/items.json
+# Equivalent script: yarn catalog:integrity FILE.json ...
+```
+
+This is a read-only file diagnostic: no driver, Mongo, credentials, activation or
+source download. Supply 1-12 explicit JSON bundles, at most 20 MiB total. The
+example resolves the synthetic map reference but warns that no compatible item
+catalog was supplied: the item fixture is re-start and the vendor fixture is
+old-times. It intentionally does not borrow another era's items.
+
+References resolve only against one supplied target snapshot with the same era,
+region, gameVersion and synthetic flag. Source revisions and datasetIds can
+vary across resource exports; equal declared scope only establishes identifier
+matching, not proven historical/source compatibility. Inspect the snapshots'
+reported scope/digest and supporting evidence before any review decision.
+
+| Diagnostic | Meaning | Severity / CLI status |
+| --- | --- | --- |
+| INVALID_REFERENCE | Malformed vendor mapId or itemId, rejected by bundle validation | Error / exit 1 |
+| INVALID_BUNDLE | Other invalid schema, record or provenance | Error / exit 1 |
+| SNAPSHOT_CONFLICT | Same immutable snapshot key supplied with different digests | Error / exit 1 |
+| NOT_OBSERVED_IN_PARTIAL | Valid reference absent from the compatible partial target | Warning / exit 0 if no errors |
+| TARGET_NOT_SUPPLIED | No valid target with matching declared scope | Warning / exit 0 if no errors |
+| AMBIGUOUS_TARGET | Multiple target snapshots in the same scope; none selected/unioned automatically | Warning / exit 0 if no errors |
+
+Identical snapshots are deduplicated. Validation reports the first structural
+error per invalid bundle and excludes it from reference resolution; this is not
+an exhaustive schema-error collector. The report includes all error/warning and
+resolved/unverified counts, snapshot keys/digests/scopes, and at most 1,000 detail
+entries; omittedDiagnostics counts additional findings. Warnings never block
+partial bundles from importing. `activationReady` is always false: even a
+structurally valid report with all supplied IDs resolved is not an activation
+approval or a claim of complete game coverage. No activation writer is added.
 
 ## Concrete remaining increments and safe real-load plan
 
@@ -166,8 +227,9 @@ untouched. Actual provider/production changes are outside this PR.
    and resource, plus representative manual comparisons. No counts are known yet.
 4. Load only a disposable staging database using least-privilege staging
    credentials in a separately authorized runner. Verify repeat imports, actual
-   driver behavior, count/hash agreement, source fidelity and cross-catalog NPC
-   shop/map/item links. Add skill/item detail only when sourced and versioned.
+   driver behavior, count/hash agreement and source fidelity. Run the implemented
+   reference diagnostic on selected era-aligned snapshots and review unresolved
+   partial shop/map/item links with source evidence. Add skill/item detail only when sourced and versioned.
 5. Prepare a promotion tool as a separate reviewed increment: validate snapshots
    and evidence, forbid synthetic data, copy to new immutable public snapshot
    namespaces without legacy writes, and atomically change reviewed pointers.

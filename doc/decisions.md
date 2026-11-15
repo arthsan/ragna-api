@@ -1,5 +1,13 @@
 # decisions.md
 
+## 2026-11-15 - Verify stored snapshots and diagnose partial catalog references
+
+- Context: Review of draft PR #9 reproduced failures in declared-digest-only reads, unchecked manifest.key, and count-only import completion. Reference integrity between versioned NPC shops, maps and items was still unimplemented.
+- Decision: Validate metadata and pointer/manifest identity; recompute the full stored snapshot count/digest before ready/read; reject incomplete or corrupted snapshots without overwriting rows. Add a bounded read-only bundle diagnostic using exact era/region/gameVersion/synthetic scopes, warning about unobserved partial links and rejecting malformed references. Identical snapshots deduplicate; conflicting keys are errors and multiple targets remain ambiguous.
+- Alternatives: Trust ready metadata alone (reproduced bugs); treat partial-catalog absence as invalid (false rejection); union unrelated eras/patches or choose an arbitrary target (unsupported compatibility); add public activation now (source and real-data acceptance still incomplete).
+- Consequences: Every uncached public read verifies the full selected snapshot with row/byte/query limits. Dataset-key indexing and real-data performance remain pending. Digest consistency is not source authenticity. The diagnostic never grants activation eligibility, and no production writer or real data is introduced. Existing routes/MCP, Node/lint ownership in PR #8 and production remain unchanged.
+- Validation/evidence: [testing-catalog.md](testing-catalog.md), [contract and diagnostic](data-catalog.md), [ADR](adr/0001-versioned-catalogs.md). PR #9 remains draft.
+
 ## 2026-11-15 - Stage versioned catalogs separately from legacy data
 
 - Context: Skills, maps, vendors and re-start items are advertised/planned but absent in main at 5a070377. The repository contains examples, not a reproducible importer or verified era/source mapping. PR #8 owns runtime/lint work and remains separate.

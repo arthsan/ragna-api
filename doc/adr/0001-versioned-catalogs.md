@@ -31,3 +31,28 @@ real Mongo integration, source adapters and actual data remain pending.
 
 Details: [contract/source review](../data-catalog.md),
 [validation](../testing-catalog.md), [decision log](../decisions.md).
+
+
+## Follow-up: snapshot verification and reference diagnosis
+
+The initial reader compared only declared digests and trusted manifest.key.
+It could serve a truncated/corrupted snapshot or metadata whose synthetic flag
+had changed without a new digest. Import completion checked count alone and
+could silently retain colliding stored contents after insert-only upserts.
+Regressions reproduced these failures before correction.
+
+Validate complete metadata and canonical identity, recompute the normalized
+stored snapshot digest before ready/read, and require the ready update's
+acknowledgement. Reading returns only verified records/metadata and closes a
+bounded cursor. The full verification scan on each cache miss is a deliberate
+initial tradeoff; real-data indexing/performance remains a promotion gate.
+Digests protect internal consistency, not the authenticity of source claims or
+against a privileged coherent rewrite. Human review and immutable write access
+remain necessary. Coverage remains partial even when the supplied snapshot is
+internally complete.
+
+A separate read-only multi-bundle diagnostic resolves NPC map/item IDs only
+within matching era/region/gameVersion/synthetic scopes. Missing IDs in a
+partial target, absent compatible targets and ambiguous snapshots are warnings;
+malformed references and conflicting immutable snapshot keys are errors. It
+never activates anything or blocks partial imports merely for missing links.

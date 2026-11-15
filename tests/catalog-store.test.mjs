@@ -7,31 +7,8 @@ import { createMongoImportStore, createMongoReader } from '../src/catalog/mongo-
 import { createCatalogHandler } from '../src/catalog/handler.ts';
 
 const fixture = async resource => JSON.parse(await readFile(new URL(`./fixtures/catalog/${resource}.json`, import.meta.url), 'utf8'));
-// Controlled driver-shaped store: insertion uniqueness, filters and $setOnInsert semantics.
-function database(name = 'ragna_catalog_test_fixture') {
-  const tables = new Map(); const writes = [];
-  let failBatch = 0; let batches = 0;
-  const table = key => { if (!tables.has(key)) tables.set(key, new Map()); return tables.get(key); };
-  const matches = (row, query) => Object.entries(query).every(([key, value]) => row[key] === value);
-  const collection = name => ({
-    async findOne(query) { return structuredClone([...table(name).values()].find(row => matches(row, query)) ?? null); },
-    async updateOne(query, update, options = {}) {
-      writes.push(name);
-      const rows = table(name); const found = [...rows.values()].find(row => matches(row, query));
-      if (found) Object.assign(found, structuredClone(update.$set ?? {}));
-      else if (options.upsert) {
-        if (rows.has(query._id)) throw new Error('Duplicate _id');
-        rows.set(query._id, { ...structuredClone(query), ...structuredClone(update.$setOnInsert ?? {}), ...structuredClone(update.$set ?? {}) });
-      }
-    },
-    async bulkWrite(operations) {
-      batches++; if (batches === failBatch) throw new Error('Injected write failure');
-      for (const { updateOne: op } of operations) await collection(name).updateOne(op.filter, op.update, { upsert: op.upsert });
-    },
-    async countDocuments(query) { return [...table(name).values()].filter(row => matches(row, query)).length; },
-  });
-  return { databaseName: name, collection, table, writes, failBatchAt: value => { failBatch = value; } };
-}
+import { database } from './support/catalog-memory-db.mjs';
+
 test('Mongo adapter imports idempotently without writing legacy collections or active pointers', async () => {
   const db = database(); const store = createMongoImportStore(db); const b = await fixture('skills');
   const first = await importBundle(b, store); const snapshot = structuredClone(db.table('catalog_records'));
@@ -71,8 +48,11 @@ test('reader requires explicit reviewed, real, ready, era and hash-matched snaps
   const pointer = {_id:'old-times/skills',datasetKey:result.key,sha256:result.sha256,reviewed:true};
   db.table('catalog_active').set(pointer._id,pointer);
   assert.deepEqual(await read('old-times','skills',900001), {available:false}, 'synthetic snapshots cannot be published');
-  // Simulate a separately reviewed real snapshot only inside this controlled fixture.
-  const manifest = db.table('catalog_datasets').get(result.key); manifest.synthetic = false;
+  // A distinct test-only bundle is hashed with synthetic:false from the start.
+  const real = structuredClone(b); real.synthetic = false; real.datasetId = 'simulated-real-v1';
+  const realResult = await importBundle(real, createMongoImportStore(db));
+  pointer.datasetKey = realResult.key; pointer.sha256 = realResult.sha256;
+  const manifest = db.table('catalog_datasets').get(realResult.key);
   assert.equal((await read('old-times','skills',900001)).data.name, 'Synthetic skill');
   assert.equal((await read('old-times','skills',999999)).data,null);
   assert.deepEqual(await read('re-start','skills',900001),{available:false});

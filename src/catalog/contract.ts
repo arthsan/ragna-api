@@ -24,11 +24,19 @@ export type Bundle = {
 };
 export type Manifest = Omit<Bundle, 'records'> & { key: string; sha256: string; recordCount: number };
 export const MAX_BYTES = 20 * 1024 * 1024;
-const MAX_RECORDS = 50000;
+export const MAX_RECORDS = 50000;
 const MAP_ID = /^[a-z0-9_@-]{1,64}$/;
 const VENDOR_ID = /^[a-z0-9_@:-]{1,120}$/;
 
-function fail(label: string): never { throw new Error(`Invalid catalog: ${label}`); }
+export class CatalogValidationError extends Error {
+  label: string;
+  constructor(label: string) {
+    super(`Invalid catalog: ${label}`);
+    this.name = 'CatalogValidationError';
+    this.label = label;
+  }
+}
+function fail(label: string): never { throw new CatalogValidationError(label); }
 function object(value: unknown, keys: string[], label: string): Record<string, unknown> {
   if (!value || typeof value !== 'object' || Array.isArray(value)) fail(label);
   const result = value as Record<string, unknown>;
@@ -84,8 +92,8 @@ function record(resource: Resource, value: unknown): CatalogRecord {
   }
   return result;
 }
-export function validateBundle(value: unknown): Bundle {
-  const data = object(value, ['schemaVersion', 'era', 'resource', 'datasetId', 'synthetic', 'coverage', 'provenance', 'records'], 'bundle');
+const METADATA_FIELDS = ['schemaVersion', 'era', 'resource', 'datasetId', 'synthetic', 'coverage', 'provenance'];
+function metadata(data: Record<string, unknown>): Omit<Bundle, 'records'> {
   if (data.schemaVersion !== 1 || !isEra(data.era) || !isResource(data.resource)) fail('version/era/resource');
   const datasetId = text(data.datasetId, 'datasetId', 80);
   if (!/^[a-z0-9][a-z0-9_-]*$/.test(datasetId)) fail('datasetId');
@@ -101,12 +109,34 @@ export function validateBundle(value: unknown): Bundle {
     licenseUrl: url(p.licenseUrl, 'licenseUrl'), permissionEvidenceUrl: url(p.permissionEvidenceUrl, 'permissionEvidenceUrl'),
     attribution: text(p.attribution, 'attribution'),
   };
+  return { schemaVersion: 1, era: data.era, resource: data.resource, datasetId, synthetic: data.synthetic, coverage: 'partial', provenance };
+}
+export function validateBundle(value: unknown): Bundle {
+  const data = object(value, [...METADATA_FIELDS, 'records'], 'bundle');
+  const base = metadata(data);
   if (!Array.isArray(data.records) || !data.records.length || data.records.length > MAX_RECORDS) fail('records count');
-  const resource = data.resource;
-  const records = data.records.map(value => record(resource, value));
+  const records = data.records.map(value => record(base.resource, value));
   if (new Set(records.map(row => row.id)).size !== records.length) fail('duplicate id');
-  records.sort((a, b) => String(a.id).localeCompare(String(b.id), 'en'));
-  return { schemaVersion: 1, era: data.era, resource, datasetId, synthetic: data.synthetic, coverage: 'partial', provenance, records };
+  // ASCII IDs have the same ordering on every supported runtime/ICU version.
+  records.sort((a, b) => String(a.id) < String(b.id) ? -1 : String(a.id) > String(b.id) ? 1 : 0);
+  return { ...base, records };
+}
+export function validateManifest(value: unknown): Manifest {
+  const data = object(value, [...METADATA_FIELDS, 'key', 'sha256', 'recordCount'], 'manifest');
+  const base = metadata(data);
+  const key = `${base.era}/${base.resource}/${base.datasetId}`;
+  if (data.key !== key || typeof data.sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(data.sha256)) fail('manifest identity/digest');
+  const recordCount = integer(data.recordCount, 'recordCount', 1, MAX_RECORDS);
+  return { ...base, key, sha256: data.sha256, recordCount };
+}
+export function manifestsEqual(left: Manifest, right: Manifest): boolean {
+  return canonical(left) === canonical(right);
+}
+export function verifySnapshot(manifest: Manifest, records: unknown[]) {
+  const { key: _key, sha256: _sha256, recordCount: _count, ...base } = manifest;
+  const plan = planBundle({ ...base, records });
+  if (!manifestsEqual(plan.manifest, manifest)) fail('snapshot digest/count mismatch');
+  return plan;
 }
 function canonical(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(canonical).join(',')}]`;

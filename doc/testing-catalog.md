@@ -6,18 +6,18 @@ Isolated cloud checkout: `ragna-data-20261115`, branch
 No repository AGENTS.md was present. Followed doc/guideline.md and retained
 the server environment regression contract.
 
-## Final results
+## Final results after integrity/snapshot follow-up
 
 | Gate | Result | Scope |
 | --- | --- | --- |
-| Catalog tests | 45 passed, 0 failed/skipped | Validation/provenance, IDs, dry-run CLI, adapter insert-only replay, 250-record partial failure/resume, count mismatch, database restriction, publication gates and ten handler combinations |
-| Combined suite after build | 88 passed, 0 failed/skipped | Catalog + 40 MCP tests + three server environment regressions |
-| Strict catalog typecheck | Passed | contract.ts, importer.ts and mongo-store.ts; excludes legacy server module reached by HTTP handler |
+| Catalog tests | 82 passed, 0 failed/skipped | Prior validation/import/route tests plus 18 cross-bundle diagnostic tests and 19 snapshot integrity/cursor regressions |
+| Combined suite after build | 125 passed, 0 failed/skipped | Catalog + 40 MCP tests + three server environment regressions |
+| Strict catalog typecheck | Passed | contract.ts, integrity.ts, importer.ts and mongo-store.ts; excludes legacy server module reached by HTTP handler |
 | App no-emit typecheck | Passed | Root TypeScript config, including handler and route files; preserves inherited strict:false |
 | MCP typecheck | Passed | Existing tsconfig.mcp.json |
 | Focused ESLint 9 / Next config | Passed | All new code/tests/routes and changed documentation.tsx; no rules disabled |
 | Next 16.1.1 optimized Turbopack build | Passed | Includes three dynamic resource routes plus re-start items; existing routes retained |
-| Compiled server HTTP smoke | 20 passed | Ten new combinations (nine fixture successes, one intentionally unactivated 503), five legacy successes, missing record 404, bad era/ID 400, path/query precedence 200 and POST 405 |
+| Compiled server HTTP smoke | 24 passed | Prior 20 routing/error checks plus 503/no-store for truncated records, modified content, mismatched manifest key and changed synthetic flag with stale digest |
 | Built browser sentinel scan | Passed | Existing test confirms fictitious Mongo sentinel absent from .next/static |
 | Whitespace / baseline preservation | Passed | git diff --check; legacy routes/service, Mongo config, MCP source and lockfile unchanged |
 | Existing package lint command | Failed, inherited | next lint is absent in Next 16: Invalid project directory .../lint |
@@ -38,8 +38,8 @@ The HTTP harness preloaded a synthetic MongoClient adapter into the compiled
 Next process, bound 127.0.0.1 only and blocked external sockets/fetch. Only the
 harness simulated reviewed real snapshots to exercise 200s; these objects never
 went to a database. Independently, committed tests prove that synthetic:true
-snapshots cannot be served. The intentional 503 tests an absent active pointer,
-not a failed database. Successes contain explicitly named synthetic records and
+snapshots cannot be served. The baseline 503 tests an absent active pointer. Four additional process-local
+fixture modes deliberately corrupt a snapshot; each returns 503/no-store. Successes contain explicitly named synthetic records and
 example.invalid provenance. Build used a fictitious local Mongo sentinel only,
 with a clean environment and no analytics credentials. The harness terminated
 the server after checks.
@@ -74,7 +74,7 @@ export default [...next];
 
 ```sh
 node node_modules/eslint/bin/eslint.js --config .qa-catalog/eslint.config.mjs \
-  src/catalog scripts/catalog-import.mjs tests/catalog-*.test.mjs \
+  src/catalog scripts/catalog-*.mjs tests/catalog-*.test.mjs tests/support/catalog-memory-db.mjs \
   'src/pages/api/v1/[era]' 'src/pages/api/v1/re-start/items' src/pages/documentation.tsx
 ```
 
@@ -90,7 +90,49 @@ This is not a claim of tested compatibility on every Node version.
 Keep the PR draft: this is a tested foundation, not delivery of populated
 catalogs. Source permission and historical region/patch mapping are unresolved,
 no actual source adapter/export has been tested, no real-driver import has been
-run, and no production promotion tool exists. Minimal record fields do not yet
+run, and no production promotion tool exists. The cross-bundle diagnostic is now
+implemented; source-backed resolution/review of partial links remains pending. Minimal record fields do not yet
 cover complete skill calculations/map geometry/item statistics. The explicit
 remaining increments and safe load plan are in [data-catalog.md](data-catalog.md).
 No merge, manual deployment, production write or provider setting change occurred.
+
+
+## Follow-up evidence and limits
+
+Follow-up parent: `8ef434c0923c3a0482dbafe5c9eae6268da72f0a` (PR #9).
+The final source was reread and the full checks above rerun after code changes.
+No other checkout, branch or PR #8 was touched. The new read-only CLI and source
+snapshot verification do not write active pointers or enable public data.
+
+Before the Mongo adapter corrections, the new snapshot regression file ran
+16 tests: 15 failed and one passed, reproducing acceptance of incomplete rows,
+changed content/provenance, unchecked manifest.key/schema/count, synthetic-flag
+changes with unchanged digest, and count-only import completion. After the fixes
+and three additional bounds/acknowledgement checks, all 19 snapshot tests pass.
+The prior reader test was corrected: flipping synthetic:false on existing
+metadata is no longer a valid success fixture. Success tests now plan/hash a
+separate simulated reviewed snapshot from the start, strictly in memory.
+
+Eighteen diagnostic tests cover exact era/region/gameVersion/synthetic scope,
+partial-target absence, malformed references, invalid bundles, multiple target
+snapshots, identical duplicates, conflicting immutable keys, bounded details,
+limits, and CLI exit semantics. The committed fixture example yields one
+resolved map reference, one unverified item reference, one warning, zero errors
+and activationReady:false: the re-start item fixture cannot satisfy an
+old-times NPC shop. No supplied fixture is a real game record.
+
+Completion and reads now validate stored snapshot content/digest, not only its
+declared ready flag or count. The reader closes its cursor even on oversized
+corruption. A full snapshot scan occurs on each uncached lookup; row/byte limits and query-limit configuration are tested. Actual Mongo query-time
+enforcement, indexing/performance and concurrent operational behavior remain
+unverified. Digests are not source signatures or
+proof of historical accuracy; immutable write permissions and human review
+remain required.
+
+The follow-up rechecked available runtimes: neither mongod nor docker is on
+PATH. No server was installed, no security setting changed and no external DB
+was used as a substitute. Driver-shaped unit fixtures and a synthetic compiled
+HTTP harness are the integration evidence available here. Local final logs:
+.qa-catalog/combined-followup-final.log, build-followup-final.log,
+http-followup-result.json and integrity-example.json (ignored, not distributed
+as source data).
