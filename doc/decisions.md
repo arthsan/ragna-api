@@ -130,3 +130,11 @@
 - Alternatives considered: Retain the implicit runtime; bundle framework/tooling upgrades. Broader changes require their own evidence and PR.
 - Consequences: Static configuration checks passed using a Node 24.18.0 verification tool. Node 26 runtime/build/typecheck validation is blocked by the absence of a prepared local runtime/dependency environment and the no-install policy. The legacy `next lint` script remains a separate known issue. MongoDB #6 and MCP #7 are independent.
 - Links: [runtime evidence and sources](node-runtime.md), [setup](setup.md).
+
+## 2026-11-15 - Separate API operations from GA4 audience
+
+- Context: every API event generated a random GA4 client ID and could use the website stream. Request totals could therefore inflate total users.
+- Decision: remove the Measurement Protocol sender and keep privacy-minimized structured operational logs with bounded route/resource/version/method labels. Leave browser analytics unchanged.
+- Alternatives: a shared fake client ID would still pollute audience; IP hashes or persistent consumer IDs would introduce unnecessary tracking; a paid metrics backend is not required for this correction.
+- Consequences: API metrics move to runtime logs, with retention/volume limitations; historical GA4 data is not repaired. No secrets or deployment settings change.
+- Validation and rollout: [api-telemetry.md](api-telemetry.md).
