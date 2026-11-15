@@ -9,7 +9,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "mcp": "node mcp/server.mjs",
     "test:mcp": "node --test tests/mcp-*.test.mjs",
     "typecheck:mcp": "tsc -p tsconfig.mcp.json"
