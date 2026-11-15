@@ -1,5 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { trackEvent } from 'lib/analytics'
 import styles from './styles.module.scss'
 
@@ -63,8 +64,8 @@ export function Main() {
       <section className={styles.getStarted}>
         <h3>Get started</h3>
         <div className={styles.links}>
-          <a href="/documentation">Documentation</a>
-          <a href="/about">About the project</a>
+          <Link href="/documentation">Documentation</Link>
+          <Link href="/about">About the project</Link>
           <a
             href="https://github.com/arthsan/ragna-api"
             onClick={() =>

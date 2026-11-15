@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { FormEvent, useEffect, useState } from 'react'
+import React, { FormEvent, useState } from 'react'
 import { JsonViewer } from 'components/JsonViewer'
 import { trackEvent } from 'lib/analytics'
 import styles from './styles.module.scss'
@@ -17,14 +17,11 @@ export function SearchBar({
 }: SearchBarProps) {
   const [search, setSearch]: any = useState<number>(1001)
   const [result, setResult]: any = useState(firstFetch)
-  const [_window, set_window]: any = useState('')
   const [searchId, setSearchId]: any = useState(1001)
   const [resourceActive, setResourceActive]: any = useState('monsters')
   const [resourceDb, setResourceDb]:any = useState('old-times')
 
-  useEffect(() => {
-    set_window(window)
-  }, [])
+  const endpoint = `/api/v1/${activeDb}/${activeSearch}/`
 
   async function handleSearch(event: FormEvent) {
     event.preventDefault()
@@ -37,7 +34,7 @@ export function SearchBar({
 
     try {
       const response = await axios.get(
-        `${_window.location?.href}api/v1/${activeDb}/${activeSearch}/${search}`,
+        `${endpoint}${search}`,
       )
 
       if (response.data) {
@@ -57,7 +54,7 @@ export function SearchBar({
     <div className={styles.container}>
       <form onSubmit={handleSearch}>
         <label htmlFor="">
-          {_window.location?.href}api/v1/{activeDb}/{activeSearch}/
+          {endpoint}
         </label>
         <input
           type="number"

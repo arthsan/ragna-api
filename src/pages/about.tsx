@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import { Footer } from 'components/Footer'
 import { Header } from 'components/Header'
 import { Seo } from 'components/Seo'
@@ -50,7 +51,7 @@ export default function About() {
               same data again and again.
             </p>
             <div className={styles.links}>
-              <a href="/documentation">Documentation</a>
+              <Link href="/documentation">Documentation</Link>
               <a href="https://github.com/arthsan/ragna-api">GitHub</a>
             </div>
           </div>

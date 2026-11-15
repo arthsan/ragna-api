@@ -1,5 +1,13 @@
 # decisions.md
 
+## 2026-11-15 - Synchronize and validate the Node 26 PR in cloud
+
+- Context: PR #8 conflicted after main merged the MongoDB #6 and MCP #7 work. The owner requested cloud validation without depending on the offline PC.
+- Decision: Merge main at `5a07037721aaa4c457700cf7786d191e1f03c25b` into the existing Node branch without rewriting history. Preserve every existing decision, main's server-only MongoDB fix, MCP scripts/implementation/tests, dependency lock and application source. Validate with a checksum-verified portable Node 26.13.1, offline locked dependencies and synthetic loopback adapters.
+- Alternatives considered: Rebase/force-push; validate only the old preview; use production services. A merge retains the reviewed history and synthetic checks avoid live service effects.
+- Consequences: Both no-emit typechecks, build, 43/43 tests, HTTP page/API smoke and official MCP SDK checks passed. The inherited lint command fails and Chromium cannot start under the cloud socket restrictions; keep the PR in draft. No machine-wide runtime, provider/security settings, merge to main or manual deploy are authorized by this synchronization.
+- Links: [runtime verification and remaining gates](node-runtime.md), [PR #8](https://github.com/arthsan/ragna-api/pull/8).
+
 ## 2026-11-14 - Synchronize the MCP branch after the MongoDB fix merged
 
 - Context: Main advanced to `b37ffaa8be2e3fcddf0569601de12a6b70edd08a` by merging PR #6. Both PRs had prepended entries to this decision log, causing the MCP PR #7 to conflict.
@@ -115,3 +123,10 @@
 - Consequences: Improved crawlability and share previews; requires keeping metadata in sync per page.
 - Links: N/A
 
+## 2026-11-14 — Select Node 26 LTS per project
+
+- Context: The owner authorized current LTS alignment. Official sources confirm Node 26.13.1 and Vercel 26.x; this base had no Node selector.
+- Decision: Add `.nvmrc` 26.13.1 and `engines.node: 26.x`, preserving dependency declarations, scripts, lock and application code.
+- Alternatives considered: Retain the implicit runtime; bundle framework/tooling upgrades. Broader changes require their own evidence and PR.
+- Consequences: Static configuration checks passed using a Node 24.18.0 verification tool. Node 26 runtime/build/typecheck validation is blocked by the absence of a prepared local runtime/dependency environment and the no-install policy. The legacy `next lint` script remains a separate known issue. MongoDB #6 and MCP #7 are independent.
+- Links: [runtime evidence and sources](node-runtime.md), [setup](setup.md).
