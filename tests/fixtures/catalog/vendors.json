@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "era": "old-times",
+  "resource": "vendors",
+  "datasetId": "synthetic-v1",
+  "synthetic": true,
+  "coverage": "partial",
+  "provenance": {
+    "sourceUrl": "https://example.invalid/synthetic",
+    "revision": "fixture-v1",
+    "retrievedAt": "2026-11-15T00:00:00.000Z",
+    "region": "synthetic-test",
+    "gameVersion": "synthetic-test",
+    "eraEvidenceUrl": "https://example.invalid/synthetic-era",
+    "licenseId": "synthetic-test-only",
+    "licenseUrl": "https://example.invalid/synthetic-license",
+    "permissionEvidenceUrl": "https://example.invalid/synthetic-permission",
+    "attribution": "Authored test fixture; no game data"
+  },
+  "records": [
+    {
+      "id": "synthetic_map:10:20:shop",
+      "name": "Synthetic NPC shop",
+      "mapId": "synthetic_map",
+      "x": 10,
+      "y": 20,
+      "items": [
+        {
+          "itemId": 900001,
+          "priceZeny": null
+        }
+      ]
+    }
+  ]
+}

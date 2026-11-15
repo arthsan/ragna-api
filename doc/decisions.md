@@ -1,5 +1,13 @@
 # decisions.md
 
+## 2026-11-15 - Stage versioned catalogs separately from legacy data
+
+- Context: Skills, maps, vendors and re-start items are advertised/planned but absent in main at 5a070377. The repository contains examples, not a reproducible importer or verified era/source mapping. PR #8 owns runtime/lint work and remains separate.
+- Decision: Introduce validated, immutable partial snapshots with explicit era, region, game version, source revision, permission/era evidence, attribution and SHA-256. Add ten lookup combinations backed by a separate `ragna-catalog` database, gated by reviewed active pointers. Synthetic snapshots cannot be served. Restrict the included writer to named loopback test databases, with dry-run by default and insert-only records. Do not activate datasets or copy legacy collections.
+- Alternatives: Scrape first (source permission/era evidence missing); map rAthena pre-re/re to the API eras automatically (unsupported equivalence); reuse legacy collections (unverified schema/provenance and overwrite risk); add MCP tools immediately (would advertise unavailable datasets).
+- Consequences: New routes intentionally return 503 until approved source acquisition and a separately authorized promotion tool/run. Current source research and fixtures establish engineering behavior, not game coverage. No dependencies or runtime selectors change. TypeScript import extensions allow the same domain modules to run in Node 22.18+/24+ tests and Next without transpiler dependencies. Existing app/MCP contracts remain unchanged.
+- Validation and next increments: [data-catalog.md](data-catalog.md), [testing-catalog.md](testing-catalog.md), [ADR](adr/0001-versioned-catalogs.md).
+
 ## 2026-11-14 - Synchronize the MCP branch after the MongoDB fix merged
 
 - Context: Main advanced to `b37ffaa8be2e3fcddf0569601de12a6b70edd08a` by merging PR #6. Both PRs had prepended entries to this decision log, causing the MCP PR #7 to conflict.

@@ -8,6 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "mcp": "node mcp/server.mjs",
+    "catalog:import": "node scripts/catalog-import.mjs",
+    "test:catalog": "node --test tests/catalog-*.test.mjs",
+    "typecheck:catalog": "tsc -p tsconfig.catalog.json",
     "test:mcp": "node --test tests/mcp-*.test.mjs",
     "typecheck:mcp": "tsc -p tsconfig.mcp.json"
   },
