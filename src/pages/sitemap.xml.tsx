@@ -16,17 +16,17 @@ const pageGlobs = [
   '!src/pages/sitemap.xml.tsx',
 ];
 
-function buildUrlEntry(url: string, lastmod: string) {
+// Omit optional lastmod until a trustworthy editorial modification date exists.
+// Build/source mtimes and request timestamps do not establish content freshness.
+function buildUrlEntry(url: string) {
   return `
     <url>
       <loc>${url}</loc>
-      <lastmod>${lastmod}</lastmod>
     </url>
   `;
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
-  const nowIso = new Date().toISOString();
   const manifestPath = path.join(
     process.cwd(),
     '.next/server/pages-manifest.json',
@@ -60,25 +60,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     });
 
     urls = Array.from(routeSet).map((route) => {
-      const manifestEntry =
-        route === ''
-          ? manifest['/index'] ?? manifest['/']
-          : manifest[route];
-      const normalizedRoute = route;
-      const filePath = path.join(
-        process.cwd(),
-        '.next/server',
-        manifestEntry ?? '',
-      );
-      let lastmod = nowIso;
-      try {
-        if (manifestEntry) {
-          lastmod = fs.statSync(filePath).mtime.toISOString();
-        }
-      } catch {
-        lastmod = nowIso;
-      }
-      return buildUrlEntry(`${SITE_URL}${normalizedRoute}`, lastmod);
+      return buildUrlEntry(`${SITE_URL}${route}`);
     });
   } else {
     const pages = await globby(pageGlobs);
@@ -96,19 +78,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     });
 
     urls = Array.from(routeSet).map((route) => {
-      const relativePage = route === '' ? 'index.tsx' : `${route}.tsx`;
-      const safeRelativePage = relativePage.replace(/^\//, '');
-      let lastmod = nowIso;
-      try {
-        lastmod = fs
-          .statSync(
-            path.join(process.cwd(), 'src/pages', safeRelativePage),
-          )
-          .mtime.toISOString();
-      } catch {
-        lastmod = nowIso;
-      }
-      return buildUrlEntry(`${SITE_URL}${route}`, lastmod);
+      return buildUrlEntry(`${SITE_URL}${route}`);
     });
   }
 
