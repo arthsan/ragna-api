@@ -1,5 +1,9 @@
 # plan-ga4.md — Plano de implementação GA4 (Google Analytics) para RagnaAPI
 
+> Update 2026-11-15: the server-side Measurement Protocol proposal below is historical
+> and superseded by [API telemetry separation](api-telemetry.md). API usage is not
+> human audience. Frontend GA4 instrumentation remains unchanged.
+
 ## Contexto atual
 - Framework: Next.js Pages Router.
 - GA no projeto: `gtag.js` via `next/script` em `src/pages/_app.tsx`.

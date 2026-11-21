@@ -87,7 +87,7 @@ API routes set CDN-friendly cache headers via `Cache-Control` (e.g. Vercel). Sti
 
 ### Requirements
 
-- Node.js compatible with the Next.js version in `package.json`
+- Node.js 26.13.1 LTS (`.nvmrc`), with `engines.node: 26.x` for Vercel; [validation and remaining gates](doc/node-runtime.md)
 - Yarn (v1)
 - A MongoDB instance containing the expected databases/collections
 
@@ -108,9 +108,11 @@ MONGODB="mongodb+srv://<user>:<pass>@<host>/<db>?retryWrites=true&w=majority"
 Optional (analytics):
 
 - `NEXT_PUBLIC_GA_ID` (GA4 Measurement ID on the client)
-- `GA4_API_SECRET` (Measurement Protocol secret for server-side events from `/api/**`)
-- `GA4_MEASUREMENT_ID` (server-side alternative to `NEXT_PUBLIC_GA_ID`)
-- `NEXT_PUBLIC_GA_DEBUG=true` / `GA4_DEBUG=true`
+- `NEXT_PUBLIC_GA_DEBUG=true` (client debugging only)
+- `API_TELEMETRY_ENABLED=false` disables structured operational logs (enabled by default).
+
+API calls do not send GA4 events. Legacy `GA4_API_SECRET`, `GA4_MEASUREMENT_ID` and
+`GA4_DEBUG` are no longer read. See [audience versus API metrics](doc/api-telemetry.md).
 
 ### Dev
 

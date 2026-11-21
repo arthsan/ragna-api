@@ -1,5 +1,12 @@
 # decisions.md
 
+## 2026-11-15 - Synchronize and validate the Node 26 PR in cloud
+
+- Context: PR #8 conflicted after main merged the MongoDB #6 and MCP #7 work. The owner requested cloud validation without depending on the offline PC.
+- Decision: Merge main at `5a07037721aaa4c457700cf7786d191e1f03c25b` into the existing Node branch without rewriting history. Preserve every existing decision, main's server-only MongoDB fix, MCP scripts/implementation/tests, dependency lock and application source. Validate with a checksum-verified portable Node 26.13.1, offline locked dependencies and synthetic loopback adapters.
+- Alternatives considered: Rebase/force-push; validate only the old preview; use production services. A merge retains the reviewed history and synthetic checks avoid live service effects.
+- Consequences: Both no-emit typechecks, build, 43/43 tests, HTTP page/API smoke and official MCP SDK checks passed. The inherited lint command fails and Chromium cannot start under the cloud socket restrictions; keep the PR in draft. No machine-wide runtime, provider/security settings, merge to main or manual deploy are authorized by this synchronization.
+- Links: [runtime verification and remaining gates](node-runtime.md), [PR #8](https://github.com/arthsan/ragna-api/pull/8).
 ## 2026-11-15 - Verify stored snapshots and diagnose partial catalog references
 
 - Context: Review of draft PR #9 reproduced failures in declared-digest-only reads, unchecked manifest.key, and count-only import completion. Reference integrity between versioned NPC shops, maps and items was still unimplemented.
@@ -131,3 +138,18 @@
 - Consequences: Improved crawlability and share previews; requires keeping metadata in sync per page.
 - Links: N/A
 
+## 2026-11-14 — Select Node 26 LTS per project
+
+- Context: The owner authorized current LTS alignment. Official sources confirm Node 26.13.1 and Vercel 26.x; this base had no Node selector.
+- Decision: Add `.nvmrc` 26.13.1 and `engines.node: 26.x`, preserving dependency declarations, scripts, lock and application code.
+- Alternatives considered: Retain the implicit runtime; bundle framework/tooling upgrades. Broader changes require their own evidence and PR.
+- Consequences: Static configuration checks passed using a Node 24.18.0 verification tool. Node 26 runtime/build/typecheck validation is blocked by the absence of a prepared local runtime/dependency environment and the no-install policy. The legacy `next lint` script remains a separate known issue. MongoDB #6 and MCP #7 are independent.
+- Links: [runtime evidence and sources](node-runtime.md), [setup](setup.md).
+
+## 2026-11-15 - Separate API operations from GA4 audience
+
+- Context: every API event generated a random GA4 client ID and could use the website stream. Request totals could therefore inflate total users.
+- Decision: remove the Measurement Protocol sender and keep privacy-minimized structured operational logs with bounded route/resource/version/method labels. Leave browser analytics unchanged.
+- Alternatives: a shared fake client ID would still pollute audience; IP hashes or persistent consumer IDs would introduce unnecessary tracking; a paid metrics backend is not required for this correction.
+- Consequences: API metrics move to runtime logs, with retention/volume limitations; historical GA4 data is not repaired. No secrets or deployment settings change.
+- Validation and rollout: [api-telemetry.md](api-telemetry.md).
