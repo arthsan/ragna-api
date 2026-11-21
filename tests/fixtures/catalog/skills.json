@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "era": "old-times",
+  "resource": "skills",
+  "datasetId": "synthetic-v1",
+  "synthetic": true,
+  "coverage": "partial",
+  "provenance": {
+    "sourceUrl": "https://example.invalid/synthetic",
+    "revision": "fixture-v1",
+    "retrievedAt": "2026-11-15T00:00:00.000Z",
+    "region": "synthetic-test",
+    "gameVersion": "synthetic-test",
+    "eraEvidenceUrl": "https://example.invalid/synthetic-era",
+    "licenseId": "synthetic-test-only",
+    "licenseUrl": "https://example.invalid/synthetic-license",
+    "permissionEvidenceUrl": "https://example.invalid/synthetic-permission",
+    "attribution": "Authored test fixture; no game data"
+  },
+  "records": [
+    {
+      "id": 900001,
+      "name": "Synthetic skill",
+      "maxLevel": 5
+    }
+  ]
+}

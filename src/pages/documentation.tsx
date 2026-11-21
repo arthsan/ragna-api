@@ -13,7 +13,6 @@ import { monsterRenewal } from 'utils/mocks/monster/renewal'
 import { monsterRestart } from 'utils/mocks/monster/restart'
 import { itemOldTimes } from 'utils/mocks/items/oldtimes'
 import { itemRenwal } from 'utils/mocks/items/renewal'
-import { itemRestart } from 'utils/mocks/items/restart'
 import { Seo } from 'components/Seo'
 import { siteUrl } from 'lib/seo'
 
@@ -155,7 +154,7 @@ function Documentation() {
                 <ul>
                   <li>Old Times (pre-renewal)</li>
                   <li>Renewal</li>
-                  <li>Restart (version created in europe)</li>
+                  <li>RE:START (region and patch alignment unverified)</li>
                 </ul>
               </p>
 
@@ -214,9 +213,9 @@ function Documentation() {
 
               <h3>Restart</h3>
 
-              <DocPath route={items.restart} db="[monster_id]" />
+              <DocPath route={items.restart} db="[id]" />
 
-              <JsonViewer data={itemRestart} />
+              <p>Catalog pending source and era verification. This endpoint returns 503 until a reviewed dataset is available. Its response uses the versioned catalog format with data and dataset metadata. <a href="https://github.com/arthsan/ragna-api/blob/main/doc/data-catalog.md">Catalog contract and coverage</a>.</p>
 
               {/* <DocTable tableInfo={tableOldTimesMonster} /> */}
             </section>

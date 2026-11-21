@@ -24,7 +24,21 @@ All endpoints below are **GET** and return **JSON**.
 - `GET /api/v1/old-times/items/:itemId`
 - `GET /api/v1/re-newal/items/:itemId`
 
-> Note: the website documentation mentions other routes/resources (e.g. `re-start/items`, skills, etc.). In this repository, the endpoints above are the ones implemented under `src/pages/api/**`.
+### Catalog lookups (awaiting verified datasets)
+
+- `GET /api/v1/:era/skills/:id`
+- `GET /api/v1/:era/maps/:id`
+- `GET /api/v1/:era/vendors/:id` (NPC shops)
+- `GET /api/v1/re-start/items/:id`
+
+Supported era identifiers: `old-times`, `re-newal`, `re-start`. These new routes
+return `503 DATASET_UNAVAILABLE` until a separately reviewed dataset is activated.
+Their normalized response is `{ data, dataset }`. Existing lookups above retain
+their original contracts. No real catalog data is bundled or loaded by this change.
+See [coverage, sources, contract and import workflow](doc/data-catalog.md),
+including the read-only `catalog:integrity` diagnostic for NPC shop/map/item
+references across supplied snapshots. Missing references in partial catalogs are
+reported as warnings; this does not activate or populate any route.
 
 ### Health
 

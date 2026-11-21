@@ -7,6 +7,21 @@
 - Alternatives considered: Rebase/force-push; validate only the old preview; use production services. A merge retains the reviewed history and synthetic checks avoid live service effects.
 - Consequences: Both no-emit typechecks, build, 43/43 tests, HTTP page/API smoke and official MCP SDK checks passed. The inherited lint command fails and Chromium cannot start under the cloud socket restrictions; keep the PR in draft. No machine-wide runtime, provider/security settings, merge to main or manual deploy are authorized by this synchronization.
 - Links: [runtime verification and remaining gates](node-runtime.md), [PR #8](https://github.com/arthsan/ragna-api/pull/8).
+## 2026-11-15 - Verify stored snapshots and diagnose partial catalog references
+
+- Context: Review of draft PR #9 reproduced failures in declared-digest-only reads, unchecked manifest.key, and count-only import completion. Reference integrity between versioned NPC shops, maps and items was still unimplemented.
+- Decision: Validate metadata and pointer/manifest identity; recompute the full stored snapshot count/digest before ready/read; reject incomplete or corrupted snapshots without overwriting rows. Add a bounded read-only bundle diagnostic using exact era/region/gameVersion/synthetic scopes, warning about unobserved partial links and rejecting malformed references. Identical snapshots deduplicate; conflicting keys are errors and multiple targets remain ambiguous.
+- Alternatives: Trust ready metadata alone (reproduced bugs); treat partial-catalog absence as invalid (false rejection); union unrelated eras/patches or choose an arbitrary target (unsupported compatibility); add public activation now (source and real-data acceptance still incomplete).
+- Consequences: Every uncached public read verifies the full selected snapshot with row/byte/query limits. Dataset-key indexing and real-data performance remain pending. Digest consistency is not source authenticity. The diagnostic never grants activation eligibility, and no production writer or real data is introduced. Existing routes/MCP, Node/lint ownership in PR #8 and production remain unchanged.
+- Validation/evidence: [testing-catalog.md](testing-catalog.md), [contract and diagnostic](data-catalog.md), [ADR](adr/0001-versioned-catalogs.md). PR #9 remains draft.
+
+## 2026-11-15 - Stage versioned catalogs separately from legacy data
+
+- Context: Skills, maps, vendors and re-start items are advertised/planned but absent in main at 5a070377. The repository contains examples, not a reproducible importer or verified era/source mapping. PR #8 owns runtime/lint work and remains separate.
+- Decision: Introduce validated, immutable partial snapshots with explicit era, region, game version, source revision, permission/era evidence, attribution and SHA-256. Add ten lookup combinations backed by a separate `ragna-catalog` database, gated by reviewed active pointers. Synthetic snapshots cannot be served. Restrict the included writer to named loopback test databases, with dry-run by default and insert-only records. Do not activate datasets or copy legacy collections.
+- Alternatives: Scrape first (source permission/era evidence missing); map rAthena pre-re/re to the API eras automatically (unsupported equivalence); reuse legacy collections (unverified schema/provenance and overwrite risk); add MCP tools immediately (would advertise unavailable datasets).
+- Consequences: New routes intentionally return 503 until approved source acquisition and a separately authorized promotion tool/run. Current source research and fixtures establish engineering behavior, not game coverage. No dependencies or runtime selectors change. TypeScript import extensions allow the same domain modules to run in Node 22.18+/24+ tests and Next without transpiler dependencies. Existing app/MCP contracts remain unchanged.
+- Validation and next increments: [data-catalog.md](data-catalog.md), [testing-catalog.md](testing-catalog.md), [ADR](adr/0001-versioned-catalogs.md).
 
 ## 2026-11-14 - Synchronize the MCP branch after the MongoDB fix merged
 
